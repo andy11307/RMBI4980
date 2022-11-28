@@ -181,12 +181,14 @@ R_JGB=JGB_Price[-1]/JGB_Price[-n] #calculate gross return R_1(k)
 NR_JGB=R_JGB-1 #calculate return 
 r_JGB=log(R_JGB) #calculate log-return
 
+#create a data frame
 datacoin=data.frame(date=date_new,BTC_Price=BTC_Price,ETH_Price=ETH_Price,DOGE_Price=DOGE_Price,SOL_Price=SOL_Price,USDT_Price=USDT_Price,XRP_Price=XRP_Price,BNB_Price=BNB_Price,USDC_Price=USDC_Price,BUSD_Price=BUSD_Price,ADA_Price=ADA_Price,Market_Price=Market_Price)  #create a data frame
-dataequity=data.frame(date=date_new,DOW_Price=DOW_Price,NASDAQ_Price=NASDAQ_Price,S.P_Price=S.P_Price,S.P45_Price=S.P45_Price)  #create a data frame
+dataequity=data.frame(date=date_new,DOW_Price=DOW_Price,NASDAQ_Price=NASDAQ_Price,S.P_Price=S.P_Price,S.P45_Price=S.P45_Price)  
 datacommodity=data.frame(date=date_new,Gold_Price=Gold_Price,SPGSCI_Price=SPGSCI_Price,BCOM_Price=BCOM_Price,DBC_Price=DBC_Price,Oil_Price=Oil_Price)
 databond=data.frame(date=date_new,FVX_Price=FVX_Price,TNX_Price=TNX_Price,IRX_Price=IRX_Price,Gilt_Price=Gilt_Price,JGB_Price=JGB_Price)
 dataFX=data.frame(date=date_new,DXY_Price=DXY_Price,RUB_Price=RUB_Price,JPY_Price=JPY_Price,CNY_Price=CNY_Price,EUR_Price=EUR_Price)
 
+#plotting the graph of the price
 ggplot(datacoin, aes(x=date, y=BTC_Price)) + geom_line() + xlab("") + ggtitle("BTC_Price")
 ggplot(datacoin, aes(x=date, y=ETH_Price)) + geom_line() + xlab("") + ggtitle("ETH_Price")
 ggplot(datacoin, aes(x=date, y=DOGE_Price)) + geom_line() + xlab("") + ggtitle("DOGE_Price")
@@ -218,6 +220,7 @@ ggplot(dataFX, aes(x=date, y=JPY_Price)) + geom_line() + xlab("") + ggtitle("JPY
 ggplot(dataFX, aes(x=date, y=CNY_Price)) + geom_line() + xlab("") + ggtitle("CNY_Price")
 ggplot(dataFX, aes(x=date, y=EUR_Price)) + geom_line() + xlab("") + ggtitle("EUR_Price")
 
+#Showing the quantile of return
 quantile(r_BTC)
 quantile(r_ETH)
 quantile(r_DOGE)
@@ -249,112 +252,99 @@ quantile(r_JPY)
 quantile(r_CNY)
 quantile(r_EUR)
 
+#drawing the histogram of return
 hist(r_BTC,breaks=40,main="Histogram of Log Asset Return of BTC")
-qqnorm(r_BTC, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BTC") #plot the quantile of r#starting of Q4
+qqnorm(r_BTC, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BTC") #plot the quantile of r
 qqline(r_BTC, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_ETH,breaks=40,main="Histogram of Log Asset Return of ETH")
-qqnorm(r_ETH, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of ETH") #plot the quantile of r#starting of Q4
+qqnorm(r_ETH, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of ETH") #plot the quantile of r
 qqline(r_ETH, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_DOGE,breaks=40,main="Histogram of Log Asset Return of DOGE")
-qqnorm(r_DOGE, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DOGE") #plot the quantile of r#starting of Q4
+qqnorm(r_DOGE, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DOGE") #plot the quantile of r
 qqline(r_DOGE, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_SOL,breaks=40,main="Histogram of Log Asset Return of SOL")
-qqnorm(r_SOL, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of SOL") #plot the quantile of r#starting of Q4
+qqnorm(r_SOL, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of SOL") #plot the quantile of r
 qqline(r_SOL, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_USDT,breaks=40,main="Histogram of Log Asset Return of USDT")
-qqnorm(r_USDT, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of USDT") #plot the quantile of r#starting of Q4
+qqnorm(r_USDT, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of USDT") #plot the quantile of r
 qqline(r_USDT, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_XRP,breaks=40,main="Histogram of Log Asset Return of XRP")
-qqnorm(r_XRP, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of XRP") #plot the quantile of r#starting of Q4
+qqnorm(r_XRP, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of XRP") #plot the quantile of r
 qqline(r_XRP, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_BNB,breaks=40,main="Histogram of Log Asset Return of BNB")
-qqnorm(r_BNB, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BNB") #plot the quantile of r#starting of Q4
+qqnorm(r_BNB, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BNB") #plot the quantile of r
 qqline(r_BNB, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_USDC,breaks=40,main="Histogram of Log Asset Return of USDC")
-qqnorm(r_USDC, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of USDC") #plot the quantile of r#starting of Q4
+qqnorm(r_USDC, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of USDC") #plot the quantile of r
 qqline(r_USDC, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_BUSD,breaks=40,main="Histogram of Log Asset Return of BUSD")
-qqnorm(r_BUSD, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BUSD") #plot the quantile of r#starting of Q4
+qqnorm(r_BUSD, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BUSD") #plot the quantile of r
 qqline(r_BUSD, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_ADA,breaks=40,main="Histogram of Log Asset Return of ADA")
-qqnorm(r_ADA, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of ADA") #plot the quantile of r#starting of Q4
+qqnorm(r_ADA, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of ADA") #plot the quantile of r
 qqline(r_ADA, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_Oil,breaks=40,main="Histogram of Log Asset Return of Oil")
-qqnorm(r_Oil, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Oil") #plot the quantile of r#starting of Q4
+qqnorm(r_Oil, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Oil") #plot the quantile of r
 qqline(r_Oil, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_Gold,breaks=40,main="Histogram of Log Asset Return of Gold")
-qqnorm(r_Gold, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Gold") #plot the quantile of r#starting of Q4
+qqnorm(r_Gold, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Gold") #plot the quantile of r
 qqline(r_Gold, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_S.P,breaks=40,main="Histogram of Log Asset Return of S&P")
-qqnorm(r_S.P, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of S&P") #plot the quantile of r#starting of Q4
+qqnorm(r_S.P, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of S&P") #plot the quantile of r
 qqline(r_S.P, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_S.P45,breaks=40,main="Histogram of Log Asset Return of S&P(technology)")
-qqnorm(r_S.P45, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of S&P(technology)") #plot the quantile of r#starting of Q4
+qqnorm(r_S.P45, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of S&P(technology)") #plot the quantile of r
 qqline(r_S.P45, col = "steelblue", lwd = 2) #plot the theoretical line
 hist(r_Market,breaks=40,main="Histogram of Log Asset Return of Market Portfolio")
-qqnorm(r_Market, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Market Portfolio") #plot the quantile of r#starting of Q4
+qqnorm(r_Market, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Market Portfolio") #plot the quantile of r
 qqline(r_Market, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_DOW,breaks=40,main="Histogram of Log Asset Return of DOW")
-qqnorm(r_DOW, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DOW") #plot the quantile of r#starting of Q4
+qqnorm(r_DOW, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DOW") #plot the quantile of r
 qqline(r_DOW, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_NASDAQ,breaks=40,main="Histogram of Log Asset Return of NASDAQ")
-qqnorm(r_NASDAQ, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of NASDAQ") #plot the quantile of r#starting of Q4
+qqnorm(r_NASDAQ, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of NASDAQ") #plot the quantile of r
 qqline(r_NASDAQ, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_SPGSCI,breaks=40,main="Histogram of Log Asset Return of SPGSCI")
-qqnorm(r_SPGSCI, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of SPGSCI") #plot the quantile of r#starting of Q4
+qqnorm(r_SPGSCI, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of SPGSCI") #plot the quantile of r
 qqline(r_SPGSCI, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_BCOM,breaks=40,main="Histogram of Log Asset Return of BCOM")
-qqnorm(r_BCOM, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BCOM") #plot the quantile of r#starting of Q4
+qqnorm(r_BCOM, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BCOM") #plot the quantile of r
 qqline(r_BCOM, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_DBC,breaks=40,main="Histogram of Log Asset Return of DBC")
-qqnorm(r_DBC, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DBC") #plot the quantile of r#starting of Q4
+qqnorm(r_DBC, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DBC") #plot the quantile of r
 qqline(r_DBC, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_FVX,breaks=40,main="Histogram of Log Asset Return of FVX")
-qqnorm(r_FVX, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of FVX") #plot the quantile of r#starting of Q4
+qqnorm(r_FVX, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of FVX") #plot the quantile of r
 qqline(r_FVX, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_TNX,breaks=40,main="Histogram of Log Asset Return of TNX")
-qqnorm(r_TNX, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of TNX") #plot the quantile of r#starting of Q4
+qqnorm(r_TNX, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of TNX") #plot the quantile of r
 qqline(r_TNX, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_IRX,breaks=40,main="Histogram of Log Asset Return of IRX")
-qqnorm(r_IRX, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of IRX") #plot the quantile of r#starting of Q4
+qqnorm(r_IRX, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of IRX") #plot the quantile of r
 qqline(r_IRX, col = "steelblue", lwd = 2) #plot the theoretical 
-
 hist(r_JGB,breaks=40,main="Histogram of Log Asset Return of JGB")
-qqnorm(r_JGB, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of JGB") #plot the quantile of r#starting of Q4
+qqnorm(r_JGB, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of JGB") #plot the quantile of r
 qqline(r_JGB, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_Gilt,breaks=40,main="Histogram of Log Asset Return of Gilt")
-qqnorm(r_Gilt, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Gilt") #plot the quantile of r#starting of Q4
+qqnorm(r_Gilt, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Gilt") #plot the quantile of r
 qqline(r_Gilt, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_DXY,breaks=40,main="Histogram of Log Asset Return of DXY")
-qqnorm(r_DXY, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DXY") #plot the quantile of r#starting of Q4
+qqnorm(r_DXY, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DXY") #plot the quantile of r
 qqline(r_DXY, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_RUB,breaks=40,main="Histogram of Log Asset Return of RUB")
-qqnorm(r_RUB, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of RUB") #plot the quantile of r#starting of Q4
+qqnorm(r_RUB, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of RUB") #plot the quantile of r
 qqline(r_RUB, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_JPY,breaks=40,main="Histogram of Log Asset Return of JPY")
-qqnorm(r_JPY, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of JPY") #plot the quantile of r#starting of Q4
+qqnorm(r_JPY, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of JPY") #plot the quantile of r
 qqline(r_JPY, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_CNY,breaks=40,main="Histogram of Log Asset Return of CNY")
-qqnorm(r_CNY, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of CNY") #plot the quantile of r#starting of Q4
+qqnorm(r_CNY, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of CNY") #plot the quantile of r
 qqline(r_CNY, col = "steelblue", lwd = 2) #plot the theoretical line
-
 hist(r_EUR,breaks=40,main="Histogram of Log Asset Return of EUR")
-qqnorm(r_EUR, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of EUR") #plot the quantile of r#starting of Q4
+qqnorm(r_EUR, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of EUR") #plot the quantile of r
 qqline(r_EUR, col = "steelblue", lwd = 2) #plot the theoretical line
 
+#Calculating the return and the risk 
 mean(r_BTC)
 sd(r_BTC)
 mean(r_ETH)
@@ -385,7 +375,6 @@ mean(r_S.P45)
 sd(r_S.P45)
 mean(r_Market)
 sd(r_Market)
-
 mean(r_DOW)
 sd(r_DOW)
 mean(r_NASDAQ)
@@ -417,21 +406,27 @@ sd(r_CNY)
 mean(r_EUR)
 sd(r_EUR)
 
+#constructing scatter plot and correlation with significance level for crypto currencies
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market)
 chart.Correlation(my_data, histogram=TRUE, pch=19)
 
+#constructing scatter plot and correlation with significance level between crypto currencies and equities
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_S.P,r_S.P45,r_DOW,r_NASDAQ)
 chart.Correlation(my_data, histogram=TRUE, pch=19)
 
+#constructing scatter plot and correlation with significance level between crypto currencies and commodities
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_SPGSCI,r_BCOM,r_DBC)
 chart.Correlation(my_data, histogram=TRUE, pch=19)
 
+#constructing scatter plot and correlation with significance level between crypto currencies and bonds
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_IRX,r_FVX,r_TNX,r_JGB,r_Gilt)
 chart.Correlation(my_data, histogram=TRUE, pch=19)
 
+#constructing scatter plot and correlation with significance level between crypto currencies and currencies
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_DXY,r_EUR,r_JPY,r_CNY,r_RUB)
 chart.Correlation(my_data, histogram=TRUE, pch=19)
 
+#Spearman correlation and p-value test for all assets(Heatmap)
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Gold,r_Oil,r_S.P,r_S.P45,r_Market,r_DOW,r_NASDAQ,r_SPGSCI,r_BCOM,r_DBC,r_FVX,r_TNX,r_IRX,r_Gilt,r_JGB,r_DXY,r_RUB,r_JPY,r_CNY,r_EUR)
 res2 <- rcorr(my_data)
 res2 <- rcorr(my_data,type="spearman")
@@ -439,6 +434,7 @@ res2
 res2$P[is.na(res2$P)]<-0
 corrplot(res2$r, type="upper", order="hclust",p.mat = res2$P, sig.level = 0.01, insig = "blank")
 
+#Pearson correlation and p-value test for all assets(Heatmap & Correlogram)
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Gold,r_Oil,r_S.P,r_S.P45,r_Market,r_DOW,r_NASDAQ,r_SPGSCI,r_BCOM,r_DBC,r_FVX,r_TNX,r_IRX,r_Gilt,r_JGB,r_DXY,r_RUB,r_JPY,r_CNY,r_EUR)
 res2 <- rcorr(my_data)
 res2 <- rcorr(my_data,type="pearson")
@@ -447,73 +443,83 @@ res2$P[is.na(res2$P)]<-0
 corrplot(res2$r, type="upper", order="hclust",p.mat = res2$P, sig.level = 0.01, insig = "blank")
 pheatmap(res2$r, clustering_distance_rows = "correlation", display_numbers = TRUE)
 
+#Kendall correlation for all assets
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market)
 res<-cor(my_data, method = "kendall")
 
-
+#Conduct PCA
 return=data.frame(r_BTC=r_BTC,r_ETH=r_ETH,r_DOGE=r_DOGE,r_SOL=r_SOL,r_USDT=r_USDT,r_XRP=r_XRP,r_BNB=r_BNB,r_USDC=r_USDC,r_BUSD=r_BUSD,r_ADA=r_ADA,r_Oil=r_Oil,r_Gold=r_Gold,r_S.P=r_S.P,r_S.P45=r_S.P45,r_DOW=r_DOW,r_NASDAQ=r_NASDAQ,r_SPGSCI=r_SPGSCI,r_BCOM=r_BCOM,r_DBC=r_DBC,r_FVX=r_FVX,r_TNX=r_TNX,r_IRX=r_IRX,r_DXY=r_DXY,r_RUB=r_RUB,r_JPY=r_JPY,r_CNY=r_CNY,r_EUR=r_EUR,r_JGB=r_JGB,r_Gilt=r_Gilt)
 my_pca <- prcomp(return, scale = TRUE,center = TRUE, retx = T)
 autoplot(my_pca, label = FALSE, label.size = 0,loadings = TRUE, loadings.label = TRUE, loadings.label.size  = 4,shape=FALSE,loadings.label.repel=T)
-
 str(my_pca)
 my_pca$x
 return2<-cbind(return,my_pca$x[,1:2])
 head(return2)
 
+#Conduct multiple linear regression analysis with BTC and traditional assets
 result=lm(r_BTC~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with ETH and traditional assets
 result=lm(r_ETH~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with DOGE and traditional assets
 result=lm(r_DOGE~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with SOL and traditional assets
 result=lm(r_SOL~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with USDT and traditional assets
 result=lm(r_USDT~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with XRP and traditional assets
 result=lm(r_XRP~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with BNB and traditional assets
 result=lm(r_BNB~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with USDC and traditional assets
 result=lm(r_USDC~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with BUSD and traditional assets
 result=lm(r_BUSD~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with ADA and traditional assets
 result=lm(r_ADA~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
@@ -557,159 +563,168 @@ JPY_Price=stock$JPY.USD[1:852]
 CNY_Price=stock$CNY.USD[1:852]
 EUR_Price=stock$EUR.USD[1:852]
 
-my_data <- cbind(BTC_Price,ETH_Price,DOGE_Price,SOL_Price,USDT_Price,XRP_Price,BNB_Price,USDC_Price,BUSD_Price,ADA_Price,Market_Price,Interest_rate,Unemployment_rate,Inflation_rate,GDP)
-chart.Correlation(my_data, histogram=TRUE, pch=19)
-
-my_data <- cbind(BTC_Price,ETH_Price,DOGE_Price,SOL_Price,USDT_Price,XRP_Price,BNB_Price,USDC_Price,BUSD_Price,ADA_Price,Market_Price,S.P_Price,S.P45_Price,DOW_Price,NASDAQ_Price,Interest_rate,Unemployment_rate,Inflation_rate,GDP)
-chart.Correlation(my_data, histogram=TRUE, pch=19)
-
-my_data <- cbind(BTC_Price,ETH_Price,DOGE_Price,SOL_Price,USDT_Price,XRP_Price,BNB_Price,USDC_Price,BUSD_Price,ADA_Price,Market_Price,SPGSCI_Price,BCOM_Price,DBC_Price,Interest_rate,Unemployment_rate,Inflation_rate,GDP)
-chart.Correlation(my_data, histogram=TRUE, pch=19)
-
-my_data <- cbind(BTC_Price,ETH_Price,DOGE_Price,SOL_Price,USDT_Price,XRP_Price,BNB_Price,USDC_Price,BUSD_Price,ADA_Price,Market_Price,IRX_Price,FVX_Price,TNX_Price,JGB_Price,Gilt_Price,Interest_rate,Unemployment_rate,Inflation_rate,GDP)
-chart.Correlation(my_data, histogram=TRUE, pch=19)
-
-my_data <- cbind(BTC_Price,ETH_Price,DOGE_Price,SOL_Price,USDT_Price,XRP_Price,BNB_Price,USDC_Price,BUSD_Price,ADA_Price,Market_Price,DXY_Price,EUR_Price,JPY_Price,CNY_Price,RUB_Price,Interest_rate,Unemployment_rate,Inflation_rate,GDP)
-chart.Correlation(my_data, histogram=TRUE, pch=19)
-
+#Conduct multiple linear regression analysis with BTC and economic factors
 result=lm(BTC_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with ETH and economic factors
 result=lm(ETH_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with DOGE and economic factors
 result=lm(DOGE_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with BUSD and economic factors
 result=lm(BUSD_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with USDT and economic factors
 result=lm(USDT_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with USDC and economic factors
 result=lm(USDC_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with ADA and economic factors
 result=lm(ADA_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with SOL and economic factors
 result=lm(SOL_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with XRP and economic factors
 result=lm(XRP_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with BNB and economic factors
 result=lm(BNB_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with Oil and economic factors
 result=lm(Oil_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with Gold and economic factors
 result=lm(Gold_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with S&P and economic factors
 result=lm(S.P_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with S&P(Technology) and economic factors
 result=lm(S.P45_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with DOW and economic factors
 result=lm(DOW_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with NASDAQ and economic factors
 result=lm(NASDAQ_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with SPGSCI and economic factors
 result=lm(SPGSCI_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with BCOM and economic factors
 result=lm(BCOM_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with DBC and economic factors
 result=lm(DBC_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with FVX and economic factors
 result=lm(FVX_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with TNX and economic factors
 result=lm(TNX_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with IRX and economic factors
 result=lm(IRX_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with JGB and economic factors
 result=lm(JGB_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with Gilt and economic factors
 result=lm(Gilt_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
@@ -717,30 +732,35 @@ plot(result,2)
 summary(result)
 
 
+#Conduct multiple linear regression analysis with DXY and economic factors
 result=lm(DXY_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with RUB and economic factors
 result=lm(RUB_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with JPY and economic factors
 result=lm(JPY_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with CNY and economic factors
 result=lm(CNY_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
 
+#Conduct multiple linear regression analysis with EUR and economic factors
 result=lm(EUR_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
