@@ -1,0 +1,748 @@
+setwd("C:/Users/User/Downloads") #set the directory
+library(corrplot)
+library("PerformanceAnalytics")
+library("Hmisc")
+library("ggplot2")
+library("ggrepel")
+library("pheatmap")
+library("ggfortify")
+
+stock=read.csv("Crypto_data2.csv",header=T)
+lct <- Sys.getlocale("LC_TIME"); Sys.setlocale("LC_TIME", "C")
+head(stock)
+date=stock$Date
+date_new=as.Date(date,"%d/%m/%Y") #create date object
+
+BTC_Price=stock$BTC_Price
+BTC_Vol=stock$BTC_Vol
+ETH_Price=stock$ETH_Price
+ETH_Vol=stock$ETH_Vol
+DOGE_Price=stock$DOGE_Price
+DOGE_Vol=stock$DOGE_Vol
+SOL_Price=stock$SOL_Price
+SOL_Vol=stock$SOL_Vol
+USDT_Price=stock$USDT_Price
+USDT_Vol=stock$USDT_Vol
+XRP_Price=stock$XRP_Price
+XRP_Vol=stock$XRP_Vol
+BNB_Price=stock$BNB_Price
+BNB_Vol=stock$BNB_Vol
+USDC_Price=stock$USDC_Price
+USDC_Vol=stock$USDC_Vol
+BUSD_Price=stock$BUSD_Price
+BUSD_Vol=stock$BUSD_Vol
+ADA_Price=stock$ADA_Price
+ADA_Vol=stock$ADA_Vol
+Gold_Price=stock$Gold_Price
+Gold_Vol=stock$Gold_Vol
+S.P_Price=stock$S.P_Price
+S.P_Vol=stock$S.P_Vol
+Oil_Price=stock$Oil_Price
+Oil_Vol=stock$Oil_Vol
+S.P45_Price=stock$S.P45_Price
+S.P45_Vol=stock$S.P45_Vol
+Market_Price=stock$Market_Price
+Market_Vol=stock$Market_Vol
+DOW_Price=stock$DOW_Price
+NASDAQ_Price=stock$NASDAQ_Price
+SPGSCI_Price=stock$SPGSCI_Price
+BCOM_Price=stock$BCOM_Price
+DBC_Price=stock$DBC_Price
+FVX_Price=stock$FVX_Yield
+TNX_Price=stock$TNX_Yield
+IRX_Price=stock$IRX_Yield
+JGB_Price=stock$JGB_Yield
+Gilt_Price=stock$Gilt_Yield
+DXY_Price=stock$DXY_Price
+RUB_Price=stock$RUB.USD
+JPY_Price=stock$JPY.USD
+CNY_Price=stock$CNY.USD
+EUR_Price=stock$EUR.USD
+
+n=length(BTC_Price)
+R_BTC=BTC_Price[-1]/BTC_Price[-n] #calculate gross return R_1(k)
+NR_BTC=R_BTC-1 #calculate return 
+r_BTC=log(R_BTC) #calculate log-return
+n=length(ETH_Price)
+R_ETH=ETH_Price[-1]/ETH_Price[-n] #calculate gross return R_1(k)
+NR_ETH=R_ETH-1 #calculate return 
+r_ETH=log(R_ETH) #calculate log-return
+n=length(DOGE_Price)
+R_DOGE=DOGE_Price[-1]/DOGE_Price[-n] #calculate gross return R_1(k)
+NR_DOGE=R_DOGE-1 #calculate return 
+r_DOGE=log(R_DOGE) #calculate log-return
+n=length(SOL_Price)
+R_SOL=SOL_Price[-1]/SOL_Price[-n] #calculate gross return R_1(k)
+NR_SOL=R_SOL-1 #calculate return 
+r_SOL=log(R_SOL) #calculate log-return
+n=length(USDT_Price)
+R_USDT=USDT_Price[-1]/USDT_Price[-n] #calculate gross return R_1(k)
+NR_USDT=R_USDT-1 #calculate return 
+r_USDT=log(R_USDT) #calculate log-return
+n=length(XRP_Price)
+R_XRP=XRP_Price[-1]/XRP_Price[-n] #calculate gross return R_1(k)
+R_XRP[is.na(R_XRP)]=0
+NR_XRP=R_XRP-1 #calculate return 
+r_XRP=log(R_XRP) #calculate log-return
+n=length(BNB_Price)
+R_BNB=BNB_Price[-1]/BNB_Price[-n] #calculate gross return R_1(k)
+NR_BNB=R_BNB-1 #calculate return 
+r_BNB=log(R_BNB) #calculate log-return
+n=length(USDC_Price)
+R_USDC=USDC_Price[-1]/USDC_Price[-n] #calculate gross return R_1(k)
+NR_USDC=R_USDC-1 #calculate return 
+r_USDC=log(R_USDC) #calculate log-return
+n=length(BUSD_Price)
+R_BUSD=BUSD_Price[-1]/BUSD_Price[-n] #calculate gross return R_1(k)
+NR_BUSD=R_BUSD-1 #calculate return 
+r_BUSD=log(R_BUSD) #calculate log-return
+n=length(ADA_Price)
+R_ADA=ADA_Price[-1]/ADA_Price[-n] #calculate gross return R_1(k)
+NR_ADA=R_ADA-1 #calculate return 
+r_ADA=log(R_ADA) #calculate log-return
+n=length(Gold_Price)
+R_Gold=Gold_Price[-1]/Gold_Price[-n] #calculate gross return R_1(k)
+NR_Gold=R_Gold-1 #calculate return 
+r_Gold=log(R_Gold) #calculate log-return
+n=length(S.P_Price)
+R_S.P=S.P_Price[-1]/S.P_Price[-n] #calculate gross return R_1(k)
+NR_S.P=R_S.P-1 #calculate return 
+r_S.P=log(R_S.P) #calculate log-return
+n=length(Oil_Price)
+R_Oil=Oil_Price[-1]/Oil_Price[-n] #calculate gross return R_1(k)
+NR_Oil=R_Oil-1 #calculate return 
+r_Oil=log(R_Oil) #calculate log-return
+n=length(Market_Price)
+R_Market=Market_Price[-1]/Market_Price[-n] #calculate gross return R_1(k)
+NR_Market=R_Market-1 #calculate return 
+r_Market=log(R_Market) #calculate log-return
+n=length(DOW_Price)
+R_DOW=DOW_Price[-1]/DOW_Price[-n] #calculate gross return R_1(k)
+NR_DOW=R_DOW-1 #calculate return 
+r_DOW=log(R_DOW) #calculate log-return
+n=length(NASDAQ_Price)
+R_NASDAQ=NASDAQ_Price[-1]/NASDAQ_Price[-n] #calculate gross return R_1(k)
+NR_NASDAQ=R_NASDAQ-1 #calculate return 
+r_NASDAQ=log(R_NASDAQ) #calculate log-return
+n=length(SPGSCI_Price)
+R_SPGSCI=SPGSCI_Price[-1]/SPGSCI_Price[-n] #calculate gross return R_1(k)
+NR_SPGSCI=R_SPGSCI-1 #calculate return 
+r_SPGSCI=log(R_SPGSCI) #calculate log-return
+n=length(BCOM_Price)
+R_BCOM=BCOM_Price[-1]/BCOM_Price[-n] #calculate gross return R_1(k)
+NR_BCOM=R_BCOM-1 #calculate return 
+r_BCOM=log(R_BCOM) #calculate log-return
+n=length(DBC_Price)
+R_DBC=DBC_Price[-1]/DBC_Price[-n] #calculate gross return R_1(k)
+NR_DBC=R_DBC-1 #calculate return 
+r_DBC=log(R_DBC) #calculate log-return
+n=length(FVX_Price)
+R_FVX=FVX_Price[-1]/FVX_Price[-n] #calculate gross return R_1(k)
+NR_FVX=R_FVX-1 #calculate return 
+r_FVX=log(R_FVX) #calculate log-return
+n=length(TNX_Price)
+R_TNX=TNX_Price[-1]/TNX_Price[-n] #calculate gross return R_1(k)
+NR_TNX=R_TNX-1 #calculate return 
+r_TNX=log(R_TNX) #calculate log-return
+n=length(IRX_Price)
+R_IRX=IRX_Price[-1]/IRX_Price[-n] #calculate gross return R_1(k)
+NR_IRX=R_IRX-1 #calculate return 
+r_IRX=log(R_IRX) #calculate log-return
+n=length(S.P45_Price)
+R_S.P45=S.P45_Price[-1]/S.P45_Price[-n] #calculate gross return R_1(k)
+NR_S.P45=R_S.P45-1 #calculate return 
+r_S.P45=log(R_S.P45) #calculate log-return
+n=length(DXY_Price)
+R_DXY=DXY_Price[-1]/DXY_Price[-n] #calculate gross return R_1(k)
+NR_DXY=R_DXY-1 #calculate return 
+r_DXY=log(R_DXY) #calculate log-return
+n=length(RUB_Price)
+R_RUB=RUB_Price[-1]/RUB_Price[-n] #calculate gross return R_1(k)
+NR_RUB=R_RUB-1 #calculate return 
+r_RUB=log(R_RUB) #calculate log-return
+n=length(JPY_Price)
+R_JPY=JPY_Price[-1]/JPY_Price[-n] #calculate gross return R_1(k)
+NR_JPY=R_JPY-1 #calculate return 
+r_JPY=log(R_JPY) #calculate log-return
+n=length(CNY_Price)
+R_CNY=CNY_Price[-1]/CNY_Price[-n] #calculate gross return R_1(k)
+NR_CNY=R_CNY-1 #calculate return 
+r_CNY=log(R_CNY) #calculate log-return
+n=length(EUR_Price)
+R_EUR=EUR_Price[-1]/EUR_Price[-n] #calculate gross return R_1(k)
+NR_EUR=R_EUR-1 #calculate return 
+r_EUR=log(R_EUR) #calculate log-
+n=length(Gilt_Price)
+R_Gilt=Gilt_Price[-1]/Gilt_Price[-n] #calculate gross return R_1(k)
+NR_Gilt=R_Gilt-1 #calculate return 
+r_Gilt=log(R_Gilt) #calculate log-return
+n=length(JGB_Price)
+R_JGB=JGB_Price[-1]/JGB_Price[-n] #calculate gross return R_1(k)
+NR_JGB=R_JGB-1 #calculate return 
+r_JGB=log(R_JGB) #calculate log-return
+
+datacoin=data.frame(date=date_new,BTC_Price=BTC_Price,ETH_Price=ETH_Price,DOGE_Price=DOGE_Price,SOL_Price=SOL_Price,USDT_Price=USDT_Price,XRP_Price=XRP_Price,BNB_Price=BNB_Price,USDC_Price=USDC_Price,BUSD_Price=BUSD_Price,ADA_Price=ADA_Price,Market_Price=Market_Price)  #create a data frame
+dataequity=data.frame(date=date_new,DOW_Price=DOW_Price,NASDAQ_Price=NASDAQ_Price,S.P_Price=S.P_Price,S.P45_Price=S.P45_Price)  #create a data frame
+datacommodity=data.frame(date=date_new,Gold_Price=Gold_Price,SPGSCI_Price=SPGSCI_Price,BCOM_Price=BCOM_Price,DBC_Price=DBC_Price,Oil_Price=Oil_Price)
+databond=data.frame(date=date_new,FVX_Price=FVX_Price,TNX_Price=TNX_Price,IRX_Price=IRX_Price,Gilt_Price=Gilt_Price,JGB_Price=JGB_Price)
+dataFX=data.frame(date=date_new,DXY_Price=DXY_Price,RUB_Price=RUB_Price,JPY_Price=JPY_Price,CNY_Price=CNY_Price,EUR_Price=EUR_Price)
+
+ggplot(datacoin, aes(x=date, y=BTC_Price)) + geom_line() + xlab("") + ggtitle("BTC_Price")
+ggplot(datacoin, aes(x=date, y=ETH_Price)) + geom_line() + xlab("") + ggtitle("ETH_Price")
+ggplot(datacoin, aes(x=date, y=DOGE_Price)) + geom_line() + xlab("") + ggtitle("DOGE_Price")
+ggplot(datacoin, aes(x=date, y=SOL_Price)) + geom_line() + xlab("") + ggtitle("SOL_Price")
+ggplot(datacoin, aes(x=date, y=USDT_Price)) + geom_line() + xlab("") + ggtitle("USDT_Price")
+ggplot(datacoin, aes(x=date, y=XRP_Price)) + geom_line() + xlab("") + ggtitle("XRP_Price")
+ggplot(datacoin, aes(x=date, y=BNB_Price)) + geom_line() + xlab("") + ggtitle("BNB_Price")
+ggplot(datacoin, aes(x=date, y=USDC_Price)) + geom_line() + xlab("") + ggtitle("USDC_Price")
+ggplot(datacoin, aes(x=date, y=BUSD_Price)) + geom_line() + xlab("") + ggtitle("BUSD_Price")
+ggplot(datacoin, aes(x=date, y=ADA_Price)) + geom_line() + xlab("") + ggtitle("ADA_Price")
+ggplot(datacoin, aes(x=date, y=Market_Price)) + geom_line() + xlab("") + ggtitle("Market_Price")
+ggplot(dataequity, aes(x=date, y=DOW_Price)) + geom_line() + xlab("") + ggtitle("DOW_Price") 
+ggplot(dataequity, aes(x=date, y=NASDAQ_Price)) + geom_line() + xlab("") + ggtitle("NASDAQ_Price") 
+ggplot(dataequity, aes(x=date, y=S.P_Price)) + geom_line() + xlab("") + ggtitle("S.P_Price") 
+ggplot(dataequity, aes(x=date, y=S.P45_Price)) + geom_line() + xlab("") + ggtitle("S.P45_Price") 
+ggplot(datacommodity, aes(x=date, y=Gold_Price)) + geom_line() + xlab("") + ggtitle("Gold_Price") 
+ggplot(datacommodity, aes(x=date, y=Oil_Price)) + geom_line() + xlab("") + ggtitle("Oil_Price")
+ggplot(datacommodity, aes(x=date, y=SPGSCI_Price)) + geom_line() + xlab("") + ggtitle("SPGSCI_Price")
+ggplot(datacommodity, aes(x=date, y=BCOM_Price)) + geom_line() + xlab("") + ggtitle("BCOM_Price")
+ggplot(datacommodity, aes(x=date, y=DBC_Price)) + geom_line() + xlab("") + ggtitle("DBC_Price")
+ggplot(databond, aes(x=date, y=FVX_Price)) + geom_line() + xlab("") + ggtitle("FVX_Price")
+ggplot(databond, aes(x=date, y=TNX_Price)) + geom_line() + xlab("") + ggtitle("TNX_Price")
+ggplot(databond, aes(x=date, y=IRX_Price)) + geom_line() + xlab("") + ggtitle("IRX_Price")
+ggplot(databond, aes(x=date, y=Gilt_Price)) + geom_line() + xlab("") + ggtitle("Gilt_Price")
+ggplot(databond, aes(x=date, y=JGB_Price)) + geom_line() + xlab("") + ggtitle("JGB_Price")
+ggplot(dataFX, aes(x=date, y=DXY_Price)) + geom_line() + xlab("") + ggtitle("DXY_Price")
+ggplot(dataFX, aes(x=date, y=RUB_Price)) + geom_line() + xlab("") + ggtitle("RUB_Price")
+ggplot(dataFX, aes(x=date, y=JPY_Price)) + geom_line() + xlab("") + ggtitle("JPY_Price")
+ggplot(dataFX, aes(x=date, y=CNY_Price)) + geom_line() + xlab("") + ggtitle("CNY_Price")
+ggplot(dataFX, aes(x=date, y=EUR_Price)) + geom_line() + xlab("") + ggtitle("EUR_Price")
+
+quantile(r_BTC)
+quantile(r_ETH)
+quantile(r_DOGE)
+quantile(r_SOL)
+quantile(r_USDT)
+quantile(r_XRP)
+quantile(r_BNB)
+quantile(r_USDC)
+quantile(r_BUSD)
+quantile(r_ADA)
+quantile(r_Oil)
+quantile(r_Gold)
+quantile(r_S.P)
+quantile(r_S.P45)
+quantile(r_Market)
+quantile(r_DOW)
+quantile(r_NASDAQ)
+quantile(r_SPGSCI)
+quantile(r_BCOM)
+quantile(r_DBC)
+quantile(r_FVX)
+quantile(r_TNX)
+quantile(r_IRX)
+quantile(r_JGB)
+quantile(r_Gilt)
+quantile(r_DXY)
+quantile(r_RUB)
+quantile(r_JPY)
+quantile(r_CNY)
+quantile(r_EUR)
+
+hist(r_BTC,breaks=40,main="Histogram of Log Asset Return of BTC")
+qqnorm(r_BTC, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BTC") #plot the quantile of r#starting of Q4
+qqline(r_BTC, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_ETH,breaks=40,main="Histogram of Log Asset Return of ETH")
+qqnorm(r_ETH, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of ETH") #plot the quantile of r#starting of Q4
+qqline(r_ETH, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_DOGE,breaks=40,main="Histogram of Log Asset Return of DOGE")
+qqnorm(r_DOGE, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DOGE") #plot the quantile of r#starting of Q4
+qqline(r_DOGE, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_SOL,breaks=40,main="Histogram of Log Asset Return of SOL")
+qqnorm(r_SOL, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of SOL") #plot the quantile of r#starting of Q4
+qqline(r_SOL, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_USDT,breaks=40,main="Histogram of Log Asset Return of USDT")
+qqnorm(r_USDT, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of USDT") #plot the quantile of r#starting of Q4
+qqline(r_USDT, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_XRP,breaks=40,main="Histogram of Log Asset Return of XRP")
+qqnorm(r_XRP, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of XRP") #plot the quantile of r#starting of Q4
+qqline(r_XRP, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_BNB,breaks=40,main="Histogram of Log Asset Return of BNB")
+qqnorm(r_BNB, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BNB") #plot the quantile of r#starting of Q4
+qqline(r_BNB, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_USDC,breaks=40,main="Histogram of Log Asset Return of USDC")
+qqnorm(r_USDC, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of USDC") #plot the quantile of r#starting of Q4
+qqline(r_USDC, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_BUSD,breaks=40,main="Histogram of Log Asset Return of BUSD")
+qqnorm(r_BUSD, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BUSD") #plot the quantile of r#starting of Q4
+qqline(r_BUSD, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_ADA,breaks=40,main="Histogram of Log Asset Return of ADA")
+qqnorm(r_ADA, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of ADA") #plot the quantile of r#starting of Q4
+qqline(r_ADA, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_Oil,breaks=40,main="Histogram of Log Asset Return of Oil")
+qqnorm(r_Oil, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Oil") #plot the quantile of r#starting of Q4
+qqline(r_Oil, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_Gold,breaks=40,main="Histogram of Log Asset Return of Gold")
+qqnorm(r_Gold, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Gold") #plot the quantile of r#starting of Q4
+qqline(r_Gold, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_S.P,breaks=40,main="Histogram of Log Asset Return of S&P")
+qqnorm(r_S.P, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of S&P") #plot the quantile of r#starting of Q4
+qqline(r_S.P, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_S.P45,breaks=40,main="Histogram of Log Asset Return of S&P(technology)")
+qqnorm(r_S.P45, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of S&P(technology)") #plot the quantile of r#starting of Q4
+qqline(r_S.P45, col = "steelblue", lwd = 2) #plot the theoretical line
+hist(r_Market,breaks=40,main="Histogram of Log Asset Return of Market Portfolio")
+qqnorm(r_Market, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Market Portfolio") #plot the quantile of r#starting of Q4
+qqline(r_Market, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_DOW,breaks=40,main="Histogram of Log Asset Return of DOW")
+qqnorm(r_DOW, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DOW") #plot the quantile of r#starting of Q4
+qqline(r_DOW, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_NASDAQ,breaks=40,main="Histogram of Log Asset Return of NASDAQ")
+qqnorm(r_NASDAQ, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of NASDAQ") #plot the quantile of r#starting of Q4
+qqline(r_NASDAQ, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_SPGSCI,breaks=40,main="Histogram of Log Asset Return of SPGSCI")
+qqnorm(r_SPGSCI, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of SPGSCI") #plot the quantile of r#starting of Q4
+qqline(r_SPGSCI, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_BCOM,breaks=40,main="Histogram of Log Asset Return of BCOM")
+qqnorm(r_BCOM, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BCOM") #plot the quantile of r#starting of Q4
+qqline(r_BCOM, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_DBC,breaks=40,main="Histogram of Log Asset Return of DBC")
+qqnorm(r_DBC, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DBC") #plot the quantile of r#starting of Q4
+qqline(r_DBC, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_FVX,breaks=40,main="Histogram of Log Asset Return of FVX")
+qqnorm(r_FVX, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of FVX") #plot the quantile of r#starting of Q4
+qqline(r_FVX, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_TNX,breaks=40,main="Histogram of Log Asset Return of TNX")
+qqnorm(r_TNX, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of TNX") #plot the quantile of r#starting of Q4
+qqline(r_TNX, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_IRX,breaks=40,main="Histogram of Log Asset Return of IRX")
+qqnorm(r_IRX, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of IRX") #plot the quantile of r#starting of Q4
+qqline(r_IRX, col = "steelblue", lwd = 2) #plot the theoretical 
+
+hist(r_JGB,breaks=40,main="Histogram of Log Asset Return of JGB")
+qqnorm(r_JGB, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of JGB") #plot the quantile of r#starting of Q4
+qqline(r_JGB, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_Gilt,breaks=40,main="Histogram of Log Asset Return of Gilt")
+qqnorm(r_Gilt, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of Gilt") #plot the quantile of r#starting of Q4
+qqline(r_Gilt, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_DXY,breaks=40,main="Histogram of Log Asset Return of DXY")
+qqnorm(r_DXY, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of DXY") #plot the quantile of r#starting of Q4
+qqline(r_DXY, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_RUB,breaks=40,main="Histogram of Log Asset Return of RUB")
+qqnorm(r_RUB, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of RUB") #plot the quantile of r#starting of Q4
+qqline(r_RUB, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_JPY,breaks=40,main="Histogram of Log Asset Return of JPY")
+qqnorm(r_JPY, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of JPY") #plot the quantile of r#starting of Q4
+qqline(r_JPY, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_CNY,breaks=40,main="Histogram of Log Asset Return of CNY")
+qqnorm(r_CNY, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of CNY") #plot the quantile of r#starting of Q4
+qqline(r_CNY, col = "steelblue", lwd = 2) #plot the theoretical line
+
+hist(r_EUR,breaks=40,main="Histogram of Log Asset Return of EUR")
+qqnorm(r_EUR, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of EUR") #plot the quantile of r#starting of Q4
+qqline(r_EUR, col = "steelblue", lwd = 2) #plot the theoretical line
+
+mean(r_BTC)
+sd(r_BTC)
+mean(r_ETH)
+sd(r_ETH)
+mean(r_DOGE)
+sd(r_DOGE)
+mean(r_SOL)
+sd(r_SOL)
+mean(r_USDT)
+sd(r_USDT)
+mean(r_XRP)
+sd(r_XRP)
+mean(r_BNB)
+sd(r_BNB)
+mean(r_USDC)
+sd(r_USDC)
+mean(r_BUSD)
+sd(r_BUSD)
+mean(r_ADA)
+sd(r_ADA)
+mean(r_Gold)
+sd(r_Gold)
+mean(r_Oil)
+sd(r_Oil)
+mean(r_S.P)
+sd(r_S.P)
+mean(r_S.P45)
+sd(r_S.P45)
+mean(r_Market)
+sd(r_Market)
+
+mean(r_DOW)
+sd(r_DOW)
+mean(r_NASDAQ)
+sd(r_NASDAQ)
+mean(r_SPGSCI)
+sd(r_SPGSCI)
+mean(r_BCOM)
+sd(r_BCOM)
+mean(r_DBC)
+sd(r_DBC)
+mean(r_FVX)
+sd(r_FVX)
+mean(r_TNX)
+sd(r_TNX)
+mean(r_IRX)
+sd(r_IRX)
+mean(r_Gilt)
+sd(r_Gilt)
+mean(r_JGB)
+sd(r_JGB)
+mean(r_DXY)
+sd(r_DXY)
+mean(r_RUB)
+sd(r_RUB)
+mean(r_JPY)
+sd(r_JPY)
+mean(r_CNY)
+sd(r_CNY)
+mean(r_EUR)
+sd(r_EUR)
+
+my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market)
+chart.Correlation(my_data, histogram=TRUE, pch=19)
+
+my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_S.P,r_S.P45,r_DOW,r_NASDAQ)
+chart.Correlation(my_data, histogram=TRUE, pch=19)
+
+my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_SPGSCI,r_BCOM,r_DBC)
+chart.Correlation(my_data, histogram=TRUE, pch=19)
+
+my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_IRX,r_FVX,r_TNX,r_JGB,r_Gilt)
+chart.Correlation(my_data, histogram=TRUE, pch=19)
+
+my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_DXY,r_EUR,r_JPY,r_CNY,r_RUB)
+chart.Correlation(my_data, histogram=TRUE, pch=19)
+
+my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Gold,r_Oil,r_S.P,r_S.P45,r_Market,r_DOW,r_NASDAQ,r_SPGSCI,r_BCOM,r_DBC,r_FVX,r_TNX,r_IRX,r_Gilt,r_JGB,r_DXY,r_RUB,r_JPY,r_CNY,r_EUR)
+res2 <- rcorr(my_data)
+res2 <- rcorr(my_data,type="spearman")
+res2
+res2$P[is.na(res2$P)]<-0
+corrplot(res2$r, type="upper", order="hclust",p.mat = res2$P, sig.level = 0.01, insig = "blank")
+
+my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Gold,r_Oil,r_S.P,r_S.P45,r_Market,r_DOW,r_NASDAQ,r_SPGSCI,r_BCOM,r_DBC,r_FVX,r_TNX,r_IRX,r_Gilt,r_JGB,r_DXY,r_RUB,r_JPY,r_CNY,r_EUR)
+res2 <- rcorr(my_data)
+res2 <- rcorr(my_data,type="pearson")
+res2
+res2$P[is.na(res2$P)]<-0
+corrplot(res2$r, type="upper", order="hclust",p.mat = res2$P, sig.level = 0.01, insig = "blank")
+pheatmap(res2$r, clustering_distance_rows = "correlation", display_numbers = TRUE)
+
+my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market)
+res<-cor(my_data, method = "kendall")
+
+
+return=data.frame(r_BTC=r_BTC,r_ETH=r_ETH,r_DOGE=r_DOGE,r_SOL=r_SOL,r_USDT=r_USDT,r_XRP=r_XRP,r_BNB=r_BNB,r_USDC=r_USDC,r_BUSD=r_BUSD,r_ADA=r_ADA,r_Oil=r_Oil,r_Gold=r_Gold,r_S.P=r_S.P,r_S.P45=r_S.P45,r_DOW=r_DOW,r_NASDAQ=r_NASDAQ,r_SPGSCI=r_SPGSCI,r_BCOM=r_BCOM,r_DBC=r_DBC,r_FVX=r_FVX,r_TNX=r_TNX,r_IRX=r_IRX,r_DXY=r_DXY,r_RUB=r_RUB,r_JPY=r_JPY,r_CNY=r_CNY,r_EUR=r_EUR,r_JGB=r_JGB,r_Gilt=r_Gilt)
+my_pca <- prcomp(return, scale = TRUE,center = TRUE, retx = T)
+autoplot(my_pca, label = FALSE, label.size = 0,loadings = TRUE, loadings.label = TRUE, loadings.label.size  = 4,shape=FALSE,loadings.label.repel=T)
+
+str(my_pca)
+my_pca$x
+return2<-cbind(return,my_pca$x[,1:2])
+head(return2)
+
+result=lm(r_BTC~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(r_ETH~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(r_DOGE~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(r_SOL~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(r_USDT~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(r_XRP~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(r_BNB~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(r_USDC~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(r_BUSD~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(r_ADA~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+
+Interest_rate=stock$interestrate.US.[1:852]
+Unemployment_rate=stock$Unemployment_rate.US.[1:852]
+Inflation_rate=stock$Inflationrate.US.[1:852]
+GDP=stock$GDP.US.[1:852]
+BTC_Price=stock$BTC_Price[1:852]
+ETH_Price=stock$ETH_Price[1:852]
+DOGE_Price=stock$DOGE_Price[1:852]
+SOL_Price=stock$SOL_Price[1:852]
+USDT_Price=stock$USDT_Price[1:852]
+XRP_Price=stock$XRP_Price[1:852]
+BNB_Price=stock$BNB_Price[1:852]
+USDC_Price=stock$USDC_Price[1:852]
+BUSD_Price=stock$BUSD_Price[1:852]
+ADA_Price=stock$ADA_Price[1:852]
+Gold_Price=stock$Gold_Price[1:852]
+S.P_Price=stock$S.P_Price[1:852]
+Oil_Price=stock$Oil_Price[1:852]
+S.P45_Price=stock$S.P45_Price[1:852]
+Market_Price=stock$Market_Price[1:852]
+DOW_Price=stock$DOW_Price[1:852]
+NASDAQ_Price=stock$NASDAQ_Price[1:852]
+SPGSCI_Price=stock$SPGSCI_Price[1:852]
+BCOM_Price=stock$BCOM_Price[1:852]
+DBC_Price=stock$DBC_Price[1:852]
+FVX_Price=stock$FVX_Yield[1:852]
+TNX_Price=stock$TNX_Yield[1:852]
+IRX_Price=stock$IRX_Yield[1:852]
+Gilt_Price=stock$IRX_Yield[1:852]
+BUND_Price=stock$IRX_Yield[1:852]
+JGB_Price=stock$IRX_Yield[1:852]
+DXY_Price=stock$DXY_Price[1:852]
+RUB_Price=stock$RUB.USD[1:852]
+JPY_Price=stock$JPY.USD[1:852]
+CNY_Price=stock$CNY.USD[1:852]
+EUR_Price=stock$EUR.USD[1:852]
+
+my_data <- cbind(BTC_Price,ETH_Price,DOGE_Price,SOL_Price,USDT_Price,XRP_Price,BNB_Price,USDC_Price,BUSD_Price,ADA_Price,Market_Price,Interest_rate,Unemployment_rate,Inflation_rate,GDP)
+chart.Correlation(my_data, histogram=TRUE, pch=19)
+
+my_data <- cbind(BTC_Price,ETH_Price,DOGE_Price,SOL_Price,USDT_Price,XRP_Price,BNB_Price,USDC_Price,BUSD_Price,ADA_Price,Market_Price,S.P_Price,S.P45_Price,DOW_Price,NASDAQ_Price,Interest_rate,Unemployment_rate,Inflation_rate,GDP)
+chart.Correlation(my_data, histogram=TRUE, pch=19)
+
+my_data <- cbind(BTC_Price,ETH_Price,DOGE_Price,SOL_Price,USDT_Price,XRP_Price,BNB_Price,USDC_Price,BUSD_Price,ADA_Price,Market_Price,SPGSCI_Price,BCOM_Price,DBC_Price,Interest_rate,Unemployment_rate,Inflation_rate,GDP)
+chart.Correlation(my_data, histogram=TRUE, pch=19)
+
+my_data <- cbind(BTC_Price,ETH_Price,DOGE_Price,SOL_Price,USDT_Price,XRP_Price,BNB_Price,USDC_Price,BUSD_Price,ADA_Price,Market_Price,IRX_Price,FVX_Price,TNX_Price,JGB_Price,Gilt_Price,Interest_rate,Unemployment_rate,Inflation_rate,GDP)
+chart.Correlation(my_data, histogram=TRUE, pch=19)
+
+my_data <- cbind(BTC_Price,ETH_Price,DOGE_Price,SOL_Price,USDT_Price,XRP_Price,BNB_Price,USDC_Price,BUSD_Price,ADA_Price,Market_Price,DXY_Price,EUR_Price,JPY_Price,CNY_Price,RUB_Price,Interest_rate,Unemployment_rate,Inflation_rate,GDP)
+chart.Correlation(my_data, histogram=TRUE, pch=19)
+
+result=lm(BTC_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(ETH_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(DOGE_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(BUSD_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(USDT_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(USDC_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(ADA_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(SOL_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(XRP_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(BNB_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(Oil_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(Gold_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(S.P_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(S.P45_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(DOW_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(NASDAQ_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(SPGSCI_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(BCOM_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(DBC_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(FVX_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(TNX_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(IRX_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(JGB_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(Gilt_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+
+result=lm(DXY_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(RUB_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(JPY_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(CNY_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
+
+result=lm(EUR_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
+plot(result,1)
+plot(result,3)
+plot(result,2)
+summary(result)
