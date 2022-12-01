@@ -6,6 +6,7 @@ library("ggplot2")
 library("ggrepel")
 library("pheatmap")
 library("ggfortify")
+library("dplyr")
 
 stock=read.csv("Crypto_data2.csv",header=T)
 lct <- Sys.getlocale("LC_TIME"); Sys.setlocale("LC_TIME", "C")
@@ -61,124 +62,124 @@ EUR_Price=stock$EUR.USD
 
 #calculate gross return R_1(k), return & log-return 
 n=length(BTC_Price)
-R_BTC=BTC_Price[-1]/BTC_Price[-n]  R_1(k)
+R_BTC=BTC_Price[-1]/BTC_Price[-n]  
 NR_BTC=R_BTC-1  
 r_BTC=log(R_BTC) 
 n=length(ETH_Price)
-R_ETH=ETH_Price[-1]/ETH_Price[-n]  R_1(k)
+R_ETH=ETH_Price[-1]/ETH_Price[-n]  
 NR_ETH=R_ETH-1  
 r_ETH=log(R_ETH) 
 n=length(DOGE_Price)
-R_DOGE=DOGE_Price[-1]/DOGE_Price[-n]  R_1(k)
+R_DOGE=DOGE_Price[-1]/DOGE_Price[-n]  
 NR_DOGE=R_DOGE-1  
 r_DOGE=log(R_DOGE) 
 n=length(SOL_Price)
-R_SOL=SOL_Price[-1]/SOL_Price[-n]  R_1(k)
+R_SOL=SOL_Price[-1]/SOL_Price[-n]  
 NR_SOL=R_SOL-1  
 r_SOL=log(R_SOL) 
 n=length(USDT_Price)
-R_USDT=USDT_Price[-1]/USDT_Price[-n]  R_1(k)
+R_USDT=USDT_Price[-1]/USDT_Price[-n]  
 NR_USDT=R_USDT-1  
 r_USDT=log(R_USDT) 
 n=length(XRP_Price)
-R_XRP=XRP_Price[-1]/XRP_Price[-n]  R_1(k)
+R_XRP=XRP_Price[-1]/XRP_Price[-n]  
 R_XRP[is.na(R_XRP)]=0
 NR_XRP=R_XRP-1  
 r_XRP=log(R_XRP) 
 n=length(BNB_Price)
-R_BNB=BNB_Price[-1]/BNB_Price[-n]  R_1(k)
+R_BNB=BNB_Price[-1]/BNB_Price[-n]  
 NR_BNB=R_BNB-1  
 r_BNB=log(R_BNB) 
 n=length(USDC_Price)
-R_USDC=USDC_Price[-1]/USDC_Price[-n]  R_1(k)
+R_USDC=USDC_Price[-1]/USDC_Price[-n]  
 NR_USDC=R_USDC-1  
 r_USDC=log(R_USDC) 
 n=length(BUSD_Price)
-R_BUSD=BUSD_Price[-1]/BUSD_Price[-n]  R_1(k)
+R_BUSD=BUSD_Price[-1]/BUSD_Price[-n]  
 NR_BUSD=R_BUSD-1  
 r_BUSD=log(R_BUSD) 
 n=length(ADA_Price)
-R_ADA=ADA_Price[-1]/ADA_Price[-n]  R_1(k)
+R_ADA=ADA_Price[-1]/ADA_Price[-n]  
 NR_ADA=R_ADA-1  
 r_ADA=log(R_ADA) 
 n=length(Gold_Price)
-R_Gold=Gold_Price[-1]/Gold_Price[-n]  R_1(k)
+R_Gold=Gold_Price[-1]/Gold_Price[-n]  
 NR_Gold=R_Gold-1  
 r_Gold=log(R_Gold) 
 n=length(S.P_Price)
-R_S.P=S.P_Price[-1]/S.P_Price[-n]  R_1(k)
+R_S.P=S.P_Price[-1]/S.P_Price[-n]  
 NR_S.P=R_S.P-1  
 r_S.P=log(R_S.P) 
 n=length(Oil_Price)
-R_Oil=Oil_Price[-1]/Oil_Price[-n]  R_1(k)
+R_Oil=Oil_Price[-1]/Oil_Price[-n]  
 NR_Oil=R_Oil-1  
 r_Oil=log(R_Oil) 
 n=length(Market_Price)
-R_Market=Market_Price[-1]/Market_Price[-n]  R_1(k)
+R_Market=Market_Price[-1]/Market_Price[-n]  
 NR_Market=R_Market-1  
 r_Market=log(R_Market) 
 n=length(DOW_Price)
-R_DOW=DOW_Price[-1]/DOW_Price[-n]  R_1(k)
+R_DOW=DOW_Price[-1]/DOW_Price[-n]  
 NR_DOW=R_DOW-1  
 r_DOW=log(R_DOW) 
 n=length(NASDAQ_Price)
-R_NASDAQ=NASDAQ_Price[-1]/NASDAQ_Price[-n]  R_1(k)
+R_NASDAQ=NASDAQ_Price[-1]/NASDAQ_Price[-n]  
 NR_NASDAQ=R_NASDAQ-1  
 r_NASDAQ=log(R_NASDAQ) 
 n=length(SPGSCI_Price)
-R_SPGSCI=SPGSCI_Price[-1]/SPGSCI_Price[-n]  R_1(k)
+R_SPGSCI=SPGSCI_Price[-1]/SPGSCI_Price[-n]  
 NR_SPGSCI=R_SPGSCI-1  
 r_SPGSCI=log(R_SPGSCI) 
 n=length(BCOM_Price)
-R_BCOM=BCOM_Price[-1]/BCOM_Price[-n]  R_1(k)
+R_BCOM=BCOM_Price[-1]/BCOM_Price[-n]  
 NR_BCOM=R_BCOM-1  
 r_BCOM=log(R_BCOM) 
 n=length(DBC_Price)
-R_DBC=DBC_Price[-1]/DBC_Price[-n]  R_1(k)
+R_DBC=DBC_Price[-1]/DBC_Price[-n]  
 NR_DBC=R_DBC-1  
 r_DBC=log(R_DBC) 
 n=length(FVX_Price)
-R_FVX=FVX_Price[-1]/FVX_Price[-n]  R_1(k)
+R_FVX=FVX_Price[-1]/FVX_Price[-n]  
 NR_FVX=R_FVX-1  
 r_FVX=log(R_FVX) 
 n=length(TNX_Price)
-R_TNX=TNX_Price[-1]/TNX_Price[-n]  R_1(k)
+R_TNX=TNX_Price[-1]/TNX_Price[-n]  
 NR_TNX=R_TNX-1  
 r_TNX=log(R_TNX) 
 n=length(IRX_Price)
-R_IRX=IRX_Price[-1]/IRX_Price[-n]  R_1(k)
+R_IRX=IRX_Price[-1]/IRX_Price[-n]  
 NR_IRX=R_IRX-1  
 r_IRX=log(R_IRX) 
 n=length(S.P45_Price)
-R_S.P45=S.P45_Price[-1]/S.P45_Price[-n]  R_1(k)
+R_S.P45=S.P45_Price[-1]/S.P45_Price[-n]  
 NR_S.P45=R_S.P45-1  
 r_S.P45=log(R_S.P45) 
 n=length(DXY_Price)
-R_DXY=DXY_Price[-1]/DXY_Price[-n]  R_1(k)
+R_DXY=DXY_Price[-1]/DXY_Price[-n]  
 NR_DXY=R_DXY-1  
 r_DXY=log(R_DXY) 
 n=length(RUB_Price)
-R_RUB=RUB_Price[-1]/RUB_Price[-n]  R_1(k)
+R_RUB=RUB_Price[-1]/RUB_Price[-n]  
 NR_RUB=R_RUB-1  
 r_RUB=log(R_RUB) 
 n=length(JPY_Price)
-R_JPY=JPY_Price[-1]/JPY_Price[-n]  R_1(k)
+R_JPY=JPY_Price[-1]/JPY_Price[-n]  
 NR_JPY=R_JPY-1  
 r_JPY=log(R_JPY) 
 n=length(CNY_Price)
-R_CNY=CNY_Price[-1]/CNY_Price[-n]  R_1(k)
+R_CNY=CNY_Price[-1]/CNY_Price[-n]  
 NR_CNY=R_CNY-1  
 r_CNY=log(R_CNY) 
 n=length(EUR_Price)
-R_EUR=EUR_Price[-1]/EUR_Price[-n]  R_1(k)
+R_EUR=EUR_Price[-1]/EUR_Price[-n]  
 NR_EUR=R_EUR-1  
 r_EUR=log(R_EUR) #calculate log-
 n=length(Gilt_Price)
-R_Gilt=Gilt_Price[-1]/Gilt_Price[-n]  R_1(k)
+R_Gilt=Gilt_Price[-1]/Gilt_Price[-n]  
 NR_Gilt=R_Gilt-1  
 r_Gilt=log(R_Gilt) 
 n=length(JGB_Price)
-R_JGB=JGB_Price[-1]/JGB_Price[-n]  R_1(k)
+R_JGB=JGB_Price[-1]/JGB_Price[-n]  
 NR_JGB=R_JGB-1  
 r_JGB=log(R_JGB) 
 
@@ -527,11 +528,11 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
-
-Interest_rate=stock$interestrate.US.[1:852]
-Unemployment_rate=stock$Unemployment_rate.US.[1:852]
-Inflation_rate=stock$Inflationrate.US.[1:852]
-GDP=stock$GDP.US.[1:852]
+#standardize the economic factors
+Interest_rate=scale(stock$interestrate.US.[1:852])
+Unemployment_rate=scale(stock$Unemployment_rate.US.[1:852])
+Inflation_rate=scale(stock$Inflationrate.US.[1:852])
+GDP=scale(stock$GDP.US.[1:852])
 BTC_Price=stock$BTC_Price[1:852]
 ETH_Price=stock$ETH_Price[1:852]
 DOGE_Price=stock$DOGE_Price[1:852]
@@ -563,6 +564,9 @@ RUB_Price=stock$RUB.USD[1:852]
 JPY_Price=stock$JPY.USD[1:852]
 CNY_Price=stock$CNY.USD[1:852]
 EUR_Price=stock$EUR.USD[1:852]
+
+variable <- data.frame(Interest_rate,Unemployment_rate,Inflation_rate,GDP)
+
 
 #Conduct multiple linear regression analysis with BTC and economic factors
 result=lm(BTC_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
