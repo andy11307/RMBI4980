@@ -1,0 +1,252 @@
+
+#Import Library
+import openpyxl
+import pandas as pd
+import yfinance as yf
+import datetime
+import time
+import requests
+import io
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
+import warnings
+warnings.filterwarnings("ignore")
+from pandas_datareader import data as pdr
+
+#Import data from Yahoo Finance
+start = datetime.datetime(2020,6,1)
+end = datetime.datetime.now()
+tickers = ["BTC-USD","ETH-USD",'DOGE-USD','USDC-USD','BUSD-USD','USDT-USD','SOL-USD','XRP-USD','ADA-USD','BNB-USD','^IRX',"DX-Y.NYB","^GSPC","^SP500-45","^DJI","^IXIC","^SPGSCI","DBC"]
+yf.pdr_override()
+stockdata = pdr.DataReader(tickers, start=start, end=end)
+stock=stockdata['Close']
+stock.reset_index(inplace=True)
+stock.fillna(method='ffill', inplace=True)
+
+
+#Calculate return for every assets
+for i in tickers:
+    stock[i+"_r"]=np.log(stock[i])-np.log(stock[i].shift(1))
+
+
+#Calculate mean of return
+mu_BTC=stock['BTC-USD_r'].mean()*250
+mu_ETH=stock['ETH-USD_r'].mean()*250
+mu_DOGE=stock['DOGE-USD_r'].mean()*250
+mu_USDC=stock['USDC-USD_r'].mean()*250
+mu_BUSD=stock['BUSD-USD_r'].mean()*250
+mu_USDT=stock['USDT-USD_r'].mean()*250
+mu_SOL=stock['SOL-USD_r'].mean()*250
+mu_XRP=stock['XRP-USD_r'].mean()*250
+mu_ADA=stock['ADA-USD_r'].mean()*250
+mu_BNB=stock['BNB-USD_r'].mean()*250
+mu_DXY=stock['DX-Y.NYB_r'].mean()*250
+mu_SP=stock['^GSPC_r'].mean()*250
+mu_SP45=stock['^SP500-45_r'].mean()*250
+mu_DOW=stock['^DJI_r'].mean()*250
+mu_NASDAQ=stock['^IXIC_r'].mean()*250
+mu_SPGSCI=stock['^SPGSCI_r'].mean()*250
+mu_DBC=stock['DBC_r'].mean()*250
+
+
+#Calculate standard deviation
+sigma_BTC=stock['BTC-USD_r'].std()*((250)**0.5)
+sigma_ETH=stock['ETH-USD_r'].std()*((250)**0.5)
+sigma_DOGE=stock['DOGE-USD_r'].std()*((250)**0.5)
+sigma_USDC=stock['USDC-USD_r'].std()*((250)**0.5)
+sigma_BUSD=stock['BUSD-USD_r'].std()*((250)**0.5)
+sigma_USDT=stock['USDT-USD_r'].std()*((250)**0.5)
+sigma_SOL=stock['SOL-USD_r'].std()*((250)**0.5)
+sigma_XRP=stock['XRP-USD_r'].std()*((250)**0.5)
+sigma_ADA=stock['ADA-USD_r'].std()*((250)**0.5)
+sigma_BNB=stock['BNB-USD_r'].std()*((250)**0.5)
+sigma_DXY=stock['DX-Y.NYB_r'].std()*((250)**0.5)
+sigma_SP=stock['^GSPC_r'].std()*((250)**0.5)
+sigma_SP45=stock['^SP500-45_r'].std()*((250)**0.5)
+sigma_DOW=stock['^DJI_r'].std()*((250)**0.5)
+sigma_NASDAQ=stock['^IXIC_r'].std()*((250)**0.5)
+sigma_SPGSCI=stock['^SPGSCI_r'].std()*((250)**0.5)
+sigma_DBC=stock['DBC_r'].std()*((250)**0.5)
+
+
+#Generate for every asset
+Portfolio=pd.DataFrame()
+
+Portfolio["w1"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w2"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w3"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w4"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w5"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w6"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w7"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w8"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w9"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w10"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w11"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w12"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w13"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w14"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w15"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w16"]=np.random.uniform(-1,1,1000)
+
+Portfolio["w17"]=1-Portfolio["w1"]-Portfolio["w2"]-Portfolio["w3"]-Portfolio["w4"]-Portfolio["w5"]-Portfolio["w6"]-Portfolio["w7"]-Portfolio["w8"]-Portfolio["w9"]-Portfolio["w10"]-Portfolio["w11"]-Portfolio["w12"]-Portfolio["w13"]-Portfolio["w14"]-Portfolio["w15"]-Portfolio["w16"]
+
+
+#Store weights and mean returns
+Portfolio["weight"] = [np.array([Portfolio.loc[t,"w1"],Portfolio.loc[t,"w2"],Portfolio.loc[t,"w3"],Portfolio.loc[t,"w4"],Portfolio.loc[t,"w5"],Portfolio.loc[t,"w6"],Portfolio.loc[t,"w7"],Portfolio.loc[t,"w8"],Portfolio.loc[t,"w9"],Portfolio.loc[t,"w10"],Portfolio.loc[t,"w11"],Portfolio.loc[t,"w12"],Portfolio.loc[t,"w13"],Portfolio.loc[t,"w14"],Portfolio.loc[t,"w15"],Portfolio.loc[t,"w16"],Portfolio.loc[t,"w17"]])for t in Portfolio.index]
+Portfolio["mu"]=[Portfolio.loc[t,"w1"]*mu_BTC+Portfolio.loc[t,"w2"]*mu_ETH+Portfolio.loc[t,"w3"]*mu_DOGE+Portfolio.loc[t,"w4"]*mu_SOL+Portfolio.loc[t,"w5"]*mu_USDT+Portfolio.loc[t,"w6"]*mu_XRP+Portfolio.loc[t,"w7"]*mu_BNB+Portfolio.loc[t,"w8"]*mu_USDC+Portfolio.loc[t,"w9"]*mu_BUSD+Portfolio.loc[t,"w10"]*mu_ADA+Portfolio.loc[t,"w11"]*mu_DXY+Portfolio.loc[t,"w12"]*mu_SP+Portfolio.loc[t,"w13"]*mu_SP45+Portfolio.loc[t,"w14"]*mu_DOW+Portfolio.loc[t,"w15"]*mu_NASDAQ+Portfolio.loc[t,"w16"]*mu_SPGSCI+Portfolio.loc[t,"w17"]*mu_DBC for t in Portfolio.index]
+
+
+#Dataframe for assets
+data=pd.DataFrame()
+
+data["BTC"]=stock['BTC-USD_r']
+
+data["ETH"]=stock['ETH-USD_r']
+
+data["DOGE"]=stock['DOGE-USD_r']
+
+data["SOL"]=stock['SOL-USD_r']
+
+data["USDT"]=stock['USDT-USD_r']
+
+data["XRP"]=stock['XRP-USD_r']
+
+data["BNB"]=stock['BNB-USD_r']
+
+data["USDC"]=stock['USDC-USD_r']
+
+data["BUSD"]=stock['BUSD-USD_r']
+data["ADA"]=stock['ADA-USD_r']
+
+data["DXY"]=stock['DX-Y.NYB_r']
+
+data["SP"]=stock['^GSPC_r']
+data["SP45"]=stock['^SP500-45_r']
+
+data["DOW"]=stock['^DJI_r']
+
+data["NASDAQ"]=stock['^IXIC_r']
+data["SPGSCI"]=stock['^SPGSCI_r']
+
+data["DBC"]=stock['DBC_r']
+
+
+data = data.dropna()
+
+data
+
+
+#Generate the covariance matrix
+SIGMA=250*data.cov()
+
+#Compute portfolio return and risk
+mu = 250 * data.mean()
+[Portfolio.loc[t,"weight"].dot(mu) for t in Portfolio.index][:5]
+Portfolio["var"]=[np.dot(Portfolio.loc[t,"weight"].T, np.dot(SIGMA, Portfolio.loc[t,"weight"])) for t in Portfolio.index]
+Portfolio["sigma"]=(Portfolio["var"])**0.5
+
+
+#Add a column for Sharpe Ratio
+Portfolio["sharpe"]=(Portfolio["mu"]-stock["^IRX"].mean()/100)/Portfolio["sigma"]
+#Drop the column of weight
+Portfolio.drop("weight",axis=1).head()
+
+
+#Sort the Sharpe Ratio ascending and get the index with the largest Sharpe Ratio
+Portfolio["sharpe"].sort_values()
+maxid=Portfolio["sharpe"].sort_values().index[-1]
+
+
+#Create efficient frontier line with the portfolio with highest Sharpe Ratio and Treasury bond
+portfolio_r=pd.DataFrame()
+
+portfolio_r["w1"]=np.arange(-1,1,0.01)
+
+portfolio_r["w2"]=1-portfolio_r["w1"]
+
+portfolio_r["mu"]=portfolio_r["w1"]*stock["^IRX"].mean()/100+portfolio_r["w2"]*portfolio.loc[maxid, 'mu']
+
+portfolio_r["sigma"]=portfolio_r["w2"]*portfolio.loc[maxid, 'sigma']
+
+
+#Plot the possible portfolios combination(including from the Excel model) and the efficient frontier
+plt.figure(figsize=(15,10))
+
+plt.title("Tradeoff of Mean/STD for the Portfolio of Stock Market")
+
+plt.scatter(portfolio["sigma"],portfolio["mu"],c=portfolio["sharpe"],cmap='RdYlBu')
+
+plt.scatter(portfolio_r["sigma"], portfolio_r["mu"],color="cyan")
+
+
+plt.xlabel('Standard Deviation of Return')
+
+plt.ylabel('Expected Return')
+
+
+plt.colorbar()
+
+plt.scatter(portfolio.loc[maxid,"sigma"],portfolio.loc[maxid,"mu"],marker=(5,1,0),color='red',s=500,label="Max Sharpe")
+
+plt.scatter(sigma_BTC,mu_BTC,marker=(5,1,0),color='green',s=500,label="BTC")
+
+plt.scatter(sigma_ETH,mu_ETH,marker=(5,1,0),color='cyan',s=500,label="ETH")
+
+plt.scatter(sigma_DOGE,mu_DOGE,marker=(5,1,0),color='purple',s=500,label="DOGE")
+
+plt.scatter(sigma_SOL,mu_SOL,marker=(5,1,0),color='yellow',s=500,label="SOL")
+
+plt.scatter(sigma_USDT,mu_USDT,marker=(5,1,0),color='orange',s=500,label="USDT")
+
+plt.scatter(sigma_XRP,mu_XRP,marker=(5,1,0),color='pink',s=500,label="XRP")
+
+plt.scatter(sigma_BNB,mu_BNB,marker=(5,1,0),color='blue',s=500,label="BNB")
+
+plt.scatter(sigma_USDC,mu_USDC,marker=(5,1,0),color='red',s=500,label="USDC")
+
+plt.scatter(sigma_BUSD,mu_BUSD,marker=(5,1,0),color='brown',s=500,label="BUSD")
+
+plt.scatter(sigma_ADA,mu_ADA,marker=(5,1,0),s=500,label="ADA")
+
+plt.scatter(sigma_DXY,mu_DXY,marker=(5,1,0),s=500,label="DXY")
+
+plt.scatter(sigma_SP,mu_SP,marker=(5,1,0),s=500,label="SP")
+
+plt.scatter(sigma_SP45,mu_SP45,marker=(5,1,0),s=500,label="SP45")
+
+plt.scatter(sigma_DOW,mu_DOW,marker=(5,1,0),s=500,label="DOW")
+
+plt.scatter(sigma_NASDAQ,mu_NASDAQ,marker=(5,1,0),s=500,label="NASDAQ")
+
+plt.scatter(sigma_SPGSCI,mu_SPGSCI,marker=(5,1,0),s=500,label="SPGSCI")
+
+plt.scatter(sigma_DBC,mu_DBC,marker=(5,1,0),s=500,label="DBC")
+
+
+plt.scatter(0.174008,0.004,marker=(5,1,0),s=1000,label="Option1")
+plt.scatter(0.0005,0.000145,marker=(5,1,0),s=1000,label="Option2")
+
+plt.legend()
+
+plt.show()
+
