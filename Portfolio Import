@@ -1,0 +1,945 @@
+
+#Import Library
+import openpyxl
+import pandas as pd
+import yfinance as yf
+import datetime
+import time
+import requests
+import io
+from pandas_datareader import data as pdr
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.style.use("seaborn")
+sns.set_style('whitegrid')
+%config InlineBackend.figure_format="retina" 
+from sklearn.preprocessing import MinMaxScaler
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers, optimizers, losses
+from tensorflow.keras.models import Sequential
+
+
+#Open Excel file of portfolio optimization model
+wb=openpyxl.load_workbook('Portfolio_v12.xlsm', read_only=False, keep_vba=True)
+savesheet=wb.worksheets[1] #Set the sheet for saving data
+
+
+#Import data from Yahoo Finance
+start = datetime.datetime(2020,6,1)
+end = datetime.datetime.now()
+tickers = ["BTC-USD","ETH-USD",'DOGE-USD','USDC-USD','BUSD-USD','USDT-USD','SOL-USD','XRP-USD','ADA-USD','BNB-USD','^IRX',"DX-Y.NYB","^GSPC","^SP500-45","^DJI","^IXIC","^SPGSCI","DBC"]
+yf.pdr_override()
+stockdata = pdr.DataReader(tickers, start=start, end=end)
+stock=stockdata['Close']
+liquid=stockdata['Volume']
+stock.fillna(method='ffill', inplace=True)
+
+
+#Export data of trading volume to Excel
+for i in range(len(stock['Date'])):
+    savesheet['CG'+str(i+3)]=stock['Date'][i]
+    savesheet['CH'+str(i+3)]=liquid['BTC-USD'][i]
+    savesheet['CI'+str(i+3)]=liquid['ETH-USD'][i]
+    savesheet['CJ'+str(i+3)]=liquid['DOGE-USD'][i]
+    savesheet['CK'+str(i+3)]=liquid['SOL-USD'][i]
+    savesheet['CL'+str(i+3)]=liquid['USDT-USD'][i]
+    savesheet['CM'+str(i+3)]=liquid['XRP-USD'][i]
+    savesheet['CN'+str(i+3)]=liquid['BNB-USD'][i]
+    savesheet['CO'+str(i+3)]=liquid['USDC-USD'][i]
+    savesheet['CP'+str(i+3)]=liquid['BUSD-USD'][i]
+    savesheet['CQ'+str(i+3)]=liquid['ADA-USD'][i]
+
+#Export data of prices to Excel
+count=1
+for i in range(len(stock['Date'])):
+    savesheet['A'+str(i+3)]=stock['Date'][i]
+    savesheet['B'+str(i+3)]=stock['BTC-USD'][i]
+    savesheet['C'+str(i+3)]=stock['ETH-USD'][i]
+    savesheet['D'+str(i+3)]=stock['DOGE-USD'][i]
+    savesheet['E'+str(i+3)]=stock['SOL-USD'][i]
+    savesheet['F'+str(i+3)]=stock['USDT-USD'][i]
+    savesheet['G'+str(i+3)]=stock['XRP-USD'][i]
+    savesheet['H'+str(i+3)]=stock['BNB-USD'][i]
+    savesheet['I'+str(i+3)]=stock['USDC-USD'][i]
+    savesheet['J'+str(i+3)]=stock['BUSD-USD'][i]
+    savesheet['K'+str(i+3)]=stock['ADA-USD'][i]
+    savesheet['T'+str(i+3)]=stock['^IRX'][i]/100
+    if (i%7==0):
+        count+=1
+        savesheet['V'+str(count+1)]=stock['Date'][i]
+        savesheet['W'+str(count+1)]=stock['BTC-USD'][i]
+        savesheet['X'+str(count+1)]=stock['ETH-USD'][i]
+        savesheet['Y'+str(count+1)]=stock['DOGE-USD'][i]
+        savesheet['Z'+str(count+1)]=stock['SOL-USD'][i]
+        savesheet['AA'+str(count+1)]=stock['USDT-USD'][i]
+        savesheet['AB'+str(count+1)]=stock['XRP-USD'][i]
+        savesheet['AC'+str(count+1)]=stock['BNB-USD'][i]
+        savesheet['AD'+str(count+1)]=stock['USDC-USD'][i]
+        savesheet['AE'+str(count+1)]=stock['BUSD-USD'][i]
+        savesheet['AF'+str(count+1)]=stock['ADA-USD'][i]
+        savesheet['AO'+str(count+1)]=stock['^IRX'][i]/100
+
+count=1
+for i in range(len(stock['Date'])):
+    savesheet['L'+str(i+3)]=stock["DX-Y.NYB"][i]
+    savesheet['M'+str(i+3)]=stock["^GSPC"][i]
+    savesheet['N'+str(i+3)]=stock["^SP500-45"][i]
+    savesheet['O'+str(i+3)]=stock["^DJI"][i]
+    savesheet['P'+str(i+3)]=stock["^IXIC"][i]
+    savesheet['Q'+str(i+3)]=stock["^SPGSCI"][i]
+    savesheet['R'+str(i+3)]=stock['DBC'][i]
+    if (i%7==0):
+        count+=1
+        savesheet['AG'+str(count+1)]=stock["DX-Y.NYB"][i]
+        savesheet['AH'+str(count+1)]=stock["^GSPC"][i]
+        savesheet['AI'+str(count+1)]=stock["^SP500-45"][i]
+        savesheet['AJ'+str(count+1)]=stock["^DJI"][i]
+        savesheet['AK'+str(count+1)]=stock["^IXIC"][i]
+        savesheet['AL'+str(count+1)]=stock["^SPGSCI"][i]
+        savesheet['AM'+str(count+1)]=stock['DBC'][i]
+
+
+#Name the columns in Excel
+savesheet['A2']='Date'
+savesheet['B2']='BTC'
+savesheet['C2']='ETH'
+savesheet['D2']='DOGE'
+savesheet['E2']='SOL'
+savesheet['F2']='USDT'
+savesheet['G2']='XRP'
+savesheet['H2']='BNB'
+savesheet['I2']='USDC'
+savesheet['J2']='BUSD'
+savesheet['K2']='ADA'
+savesheet['T2']='IRX'
+
+savesheet['V2']='Date'
+savesheet['W2']='BTC'
+savesheet['X2']='ETH'
+savesheet['Y2']='DOGE'
+savesheet['Z2']='SOL'
+savesheet['AA2']='USDT'
+savesheet['AB2']='XRP'
+savesheet['AC2']='BNB'
+savesheet['AD2']='USDC'
+savesheet['AE2']='BUSD'
+savesheet['AF2']='ADA'
+savesheet['AG2']='IRX'
+
+
+savesheet['L2']='DXY'
+savesheet['M2']='S&P'
+savesheet['N2']='S&P(Tech)'
+savesheet['O2']='DOW'
+savesheet['P2']='NASDAQ'
+savesheet['Q2']='SPGSCI'
+savesheet['R2']='DBC'
+
+
+savesheet['AG2']='DXY'
+savesheet['AH2']='S&P'
+savesheet['AI2']='S&P(Tech)'
+savesheet['AJ2']='DOW'
+savesheet['AK2']='NASDAQ'
+savesheet['AL2']='SPGSCI'
+savesheet['AM2']='DBC'
+
+
+#Define the function to generate the sequence for data set
+def generate_sequences(data, window):  
+
+  features_sequences = [data[i-window:i, 0] for i in range(window, len(data))]
+  target_sequences = [data[i, 0] for i in range(window, len(data))]
+
+  features_sequences = np.stack(features_sequences)[:, :, np.newaxis]
+  target_sequences = np.array(target_sequences)
+
+  return features_sequences, target_sequences
+
+
+#set scaler and moving window
+scaler = MinMaxScaler(feature_range=(0, 1))  
+window = 5
+
+
+#RNN development for BTC’s price prediction
+BTC_data = stock['BTC-USD'].values.reshape(-1, 1)
+scaled_BTC = scaler.fit_transform(BTC_data)
+X_train_BTC, y_train_BTC = generate_sequences(scaled_BTC, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_BTC.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="BTC_RNN_model")
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+RNN_model.fit(X_train_BTC, y_train_BTC, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_BTC[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - BTC_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+valid = stock.filter(['BTC-USD'])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(['BTC-USD'])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of BTC to Excel
+a=X_train_BTC[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['FT'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for ETH’s price prediction
+ETH_data = stock['ETH-USD'].values.reshape(-1, 1)
+scaled_ETH = scaler.fit_transform(ETH_data)
+X_train_ETH, y_train_ETH = generate_sequences(scaled_ETH, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_ETH.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="ETH_RNN_model")
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+RNN_model.fit(X_train_ETH, y_train_ETH, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_ETH[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - ETH_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(['ETH-USD'])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(['ETH-USD'])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of ETH to Excel
+a=X_train_ETH[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['FU'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for DOGE’s price prediction
+DOGE_data = stock['DOGE-USD'].values.reshape(-1, 1)
+scaled_DOGE = scaler.fit_transform(DOGE_data)
+X_train_DOGE, y_train_DOGE = generate_sequences(scaled_DOGE, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_DOGE.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="DOGE_RNN_model")
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+
+RNN_model.fit(X_train_DOGE, y_train_DOGE, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_DOGE[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - DOGE_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(['DOGE-USD'])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(['DOGE-USD'])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of DOGE to Excel
+a=X_train_DOGE[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['FV'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for SOL’s price prediction
+SOL_data = stock['SOL-USD'].values.reshape(-1, 1)
+scaled_SOL = scaler.fit_transform(SOL_data)
+X_train_SOL, y_train_SOL = generate_sequences(scaled_SOL, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_SOL.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="SOL_RNN_model")
+
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+RNN_model.fit(X_train_SOL, y_train_SOL, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_SOL[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - SOL_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(['SOL-USD'])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(['SOL-USD'])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of SOL to Excel
+a=X_train_SOL[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['FW'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for USDT’s price prediction
+USDT_data = stock['USDT-USD'].values.reshape(-1, 1)
+scaled_USDT = scaler.fit_transform(USDT_data)
+X_train_USDT, y_train_USDT = generate_sequences(scaled_USDT, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_USDT.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="USDT_RNN_model")
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+RNN_model.fit(X_train_USDT, y_train_USDT, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_USDT[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - USDT_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(['USDT-USD'])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(['USDT-USD'])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of USDT to Excel
+a=X_train_USDT[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['FX'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for XRP’s price prediction
+XRP_data = stock['XRP-USD'].values.reshape(-1, 1)
+scaled_XRP = scaler.fit_transform(XRP_data)
+X_train_XRP, y_train_XRP = generate_sequences(scaled_XRP, window)
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_XRP.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="XRP_RNN_model")
+
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+
+RNN_model.fit(X_train_XRP, y_train_XRP, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_XRP[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - XRP_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(['XRP-USD'])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(['XRP-USD'])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of XRP to Excel
+a=X_train_XRP[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['FY'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for BNB’s price prediction
+BNB_data = stock['BNB-USD'].values.reshape(-1, 1)
+scaled_BNB = scaler.fit_transform(BNB_data)
+X_train_BNB, y_train_BNB = generate_sequences(scaled_BNB, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_BNB.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="BNB_RNN_model")
+
+
+print(RNN_model.summary(), "\n")
+
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+
+RNN_model.fit(X_train_BNB, y_train_BNB, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_BNB[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - BNB_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+
+valid = stock.filter(['BNB-USD'])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(['BNB-USD'])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of BNB to Excel
+a=X_train_BNB[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['FZ'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for USDC’s price prediction
+USDC_data = stock['USDC-USD'].values.reshape(-1, 1)
+scaled_USDC = scaler.fit_transform(USDC_data)
+X_train_USDC, y_train_USDC = generate_sequences(scaled_USDC, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_USDC.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="USDC_RNN_model")
+
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+
+RNN_model.fit(X_train_USDC, y_train_USDC, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_USDC[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+
+rmse = np.sqrt(np.mean(((predictions - USDC_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+
+valid = stock.filter(['USDC-USD'])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(['USDC-USD'])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of USDC to Excel
+a=X_train_USDC[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['GA'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for BUSD’s price prediction
+BUSD_data = stock['BUSD-USD'].values.reshape(-1, 1)
+scaled_BUSD = scaler.fit_transform(BUSD_data)
+X_train_BUSD, y_train_BUSD = generate_sequences(scaled_BUSD, window)
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_BUSD.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="BUSD_RNN_model")
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+RNN_model.fit(X_train_BUSD, y_train_BUSD, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_BUSD[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - BUSD_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(['BUSD-USD'])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(['BUSD-USD'])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of BUSD to Excel
+a=X_train_BUSD[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['GB'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for ADA’s price prediction
+ADA_data = stock['ADA-USD'].values.reshape(-1, 1)
+scaled_ADA = scaler.fit_transform(ADA_data)
+X_train_ADA, y_train_ADA = generate_sequences(scaled_ADA, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_ADA.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="ADA_RNN_model")
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+RNN_model.fit(X_train_ADA, y_train_ADA, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_ADA[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - ADA_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(['ADA-USD'])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(['ADA-USD'])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of ADA to Excel
+a=X_train_ADA[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['GC'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for DXY’s price prediction
+DXY_data = stock["DX-Y.NYB"].values.reshape(-1, 1)
+scaled_DXY = scaler.fit_transform(DXY_data)
+X_train_DXY, y_train_DXY = generate_sequences(scaled_DXY, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_DXY.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="DXY_RNN_model")
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+RNN_model.fit(X_train_DXY, y_train_DXY, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_DXY[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - DXY_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(["DX-Y.NYB"])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(["DX-Y.NYB"])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of DXY to Excel
+a=X_train_DXY[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['GD'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for S&P’s price prediction
+SP_data = stock["^GSPC"].values.reshape(-1, 1)
+scaled_SP = scaler.fit_transform(SP_data)
+X_train_SP, y_train_SP = generate_sequences(scaled_SP, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_SP.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="SP500_RNN_model")
+
+
+
+print(RNN_model.summary(), "\n")
+
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+RNN_model.fit(X_train_SP, y_train_SP, batch_size=32, epochs=10)
+
+
+predictions = RNN_model.predict(X_train_SP[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - SP_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+valid = stock.filter(["^GSPC"])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(["^GSPC"])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of S&P to Excel
+a=X_train_SP[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['GE'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for S&P(Tech)’s price prediction
+SP45_data = stock["^SP500-45"].values.reshape(-1, 1)
+scaled_SP45 = scaler.fit_transform(SP45_data)
+X_train_SP45, y_train_SP45 = generate_sequences(scaled_SP45, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_SP45.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="SP500_45_RNN_model")
+
+
+
+print(RNN_model.summary(), "\n")
+
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+
+RNN_model.fit(X_train_SP45, y_train_SP45, batch_size=32, epochs=10)
+
+
+predictions = RNN_model.predict(X_train_SP45[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+
+rmse = np.sqrt(np.mean(((predictions - SP45_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(["^SP500-45"])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(["^SP500-45"])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of S&P(Tech) to Excel
+a=X_train_SP45[-1:]
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['GF'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for DOW’s price prediction
+DJ_data = stock["^DJI"].values.reshape(-1, 1)
+scaled_DJ = scaler.fit_transform(DJ_data)
+X_train_DJ, y_train_DJ = generate_sequences(scaled_DJ, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_DJ.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="DJI_RNN_model")
+
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+
+RNN_model.fit(X_train_DJ, y_train_DJ, batch_size=32, epochs=10)
+ 
+predictions = RNN_model.predict(X_train_DJ[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - DJ_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(["^DJI"])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(["^DJI"])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of DOW to Excel
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['GG'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for NASDAQ’s price prediction
+NQ_data = stock["^IXIC"].values.reshape(-1, 1)
+scaled_NQ = scaler.fit_transform(NQ_data)
+X_train_NQ, y_train_NQ = generate_sequences(scaled_NQ, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_NQ.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="NASDAQ_RNN_model")
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+RNN_model.fit(X_train_NQ, y_train_NQ, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_NQ[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+
+rmse = np.sqrt(np.mean(((predictions - NQ_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(["^IXIC"])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(["^IXIC"])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of NASDAQ to Excel
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['GH'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for SPGSCI’s price prediction
+SG_data = stock["^SPGSCI"].values.reshape(-1, 1)
+scaled_SG = scaler.fit_transform(SG_data)
+X_train_SG, y_train_SG = generate_sequences(scaled_SG, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_SG.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="SPGSCI_RNN_model")
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+RNN_model.fit(X_train_SG, y_train_SG, batch_size=32, epochs=10)
+
+predictions = RNN_model.predict(X_train_SG[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+rmse = np.sqrt(np.mean(((predictions - SG_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(["^SPGSCI"])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(["^SPGSCI"])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of SPGSCI to Excel
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['GI'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#RNN development for DBC’s price prediction
+DBC_data = stock["DBC"].values.reshape(-1, 1)
+scaled_DBC = scaler.fit_transform(DBC_data)
+X_train_DBC, y_train_DBC = generate_sequences(scaled_DBC, window)
+
+RNN_model = Sequential([layers.SimpleRNN(32, input_shape= X_train_DBC.shape[1:], name="recurrent"),   
+                        layers.Dense(1, name="output")],
+                       name="DBC_RNN_model")
+
+
+print(RNN_model.summary(), "\n")
+
+RNN_model.compile(optimizer='adam', loss='mse')
+
+
+RNN_model.fit(X_train_DBC, y_train_DBC, batch_size=32, epochs=10)
+ 
+predictions = RNN_model.predict(X_train_DBC[-200:])
+predictions = scaler.inverse_transform(predictions)
+
+rmse = np.sqrt(np.mean(((predictions - DBC_data[-200:]) ** 2)))
+print("\nThe root mean squared error (RMSE) is:", rmse)
+
+
+valid = stock.filter(["DBC"])[-200:]
+valid["Prediction"] = predictions
+
+fig, ax = plt.subplots(1, 1, figsize=(16, 6))
+ax.plot(stock.filter(["DBC"])[-400:-200])
+ax.plot(valid)
+ax.set(title='Model Prediction', xlabel='Date', ylabel='Close Price USD ($)')
+plt.legend(['History', 'True Labels', 'Predictions'], loc='lower right')
+plt.show()
+
+
+#Store value of predicted price of DBC to Excel
+for i in range(30):
+    b=RNN_model.predict(a)
+    savesheet['GJ'+str(i+3)]=scaler.inverse_transform(b)[0][0]
+    a=np.append(a,b)
+    a=a[-5:]
+    a=np.reshape(a,[1,5,1])
+
+
+#Save all the values to Excel
+wb.save('Portfolio_v12.xlsm')
+
