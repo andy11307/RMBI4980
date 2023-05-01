@@ -1,17 +1,32 @@
+
 setwd("C:/Users/User/Downloads") #set the directory
-library(corrplot)
+library("corrplot")
 library("PerformanceAnalytics")
 library("Hmisc")
 library("ggplot2")
 library("ggrepel")
 library("pheatmap")
 library("ggfortify")
+library("dplyr")
+library(fma)
+library(tsibbledata)
+library(dplyr)
+library(fpp2)
+library(TSA)
+library(astsa)
+library(TSstudio)
+library(lubridate)
+library(car)
+library(dyn)
+library(nlme)
+
 
 stock=read.csv("Crypto_data2.csv",header=T)
 lct <- Sys.getlocale("LC_TIME"); Sys.setlocale("LC_TIME", "C")
 head(stock)
 date=stock$Date
 date_new=as.Date(date,"%d/%m/%Y") #create date object
+
 
 BTC_Price=stock$BTC_Price
 BTC_Vol=stock$BTC_Vol
@@ -57,7 +72,40 @@ DXY_Price=stock$DXY_Price
 RUB_Price=stock$RUB.USD
 JPY_Price=stock$JPY.USD
 CNY_Price=stock$CNY.USD
-EUR_Price=stock$EUR.USD
+EUR_Price=stock$EUR.USD 
+
+
+#Construction of ACF plot
+ggAcf(BTC_Price)
+ggAcf(ETH_Price)
+ggAcf(DOGE_Price)
+ggAcf(SOL_Price)
+ggAcf(USDT_Price)
+ggAcf(XRP_Price)
+ggAcf(BNB_Price)
+ggAcf(USDC_Price)
+ggAcf(BUSD_Price)
+ggAcf(ADA_Price)
+ggAcf(S.P_Price)
+ggAcf(S.P45_Price)
+ggAcf(DOW_Price)
+ggAcf(NASDAQ_Price)
+ggAcf(SPGSCI_Price)
+ggAcf(BCOM_Price)
+ggAcf(DBC_Price)
+ggAcf(Oil_Price)
+ggAcf(Gold_Price)
+ggAcf(DXY_Price)
+ggAcf(EUR_Price)
+ggAcf(JPY_Price)
+ggAcf(CNY_Price)
+ggAcf(RUB_Price)
+ggAcf(IRX_Price)
+ggAcf(FVX_Price)
+ggAcf(TNX_Price)
+ggAcf(JGB_Price)
+ggAcf(Gilt_Price)
+
 
 #calculate gross return R_1(k), return & log-return 
 n=length(BTC_Price)
@@ -181,8 +229,10 @@ n=length(JGB_Price)
 R_JGB=JGB_Price[-1]/JGB_Price[-n]  R_1(k)
 NR_JGB=R_JGB-1  
 r_JGB=log(R_JGB) 
+ 
 
 #create a data frame
+
 datacoin=data.frame(date=date_new,BTC_Price=BTC_Price,ETH_Price=ETH_Price,DOGE_Price=DOGE_Price,SOL_Price=SOL_Price,USDT_Price=USDT_Price,XRP_Price=XRP_Price,BNB_Price=BNB_Price,USDC_Price=USDC_Price,BUSD_Price=BUSD_Price,ADA_Price=ADA_Price,Market_Price=Market_Price)  #create a data frame
 dataequity=data.frame(date=date_new,DOW_Price=DOW_Price,NASDAQ_Price=NASDAQ_Price,S.P_Price=S.P_Price,S.P45_Price=S.P45_Price)  
 datacommodity=data.frame(date=date_new,Gold_Price=Gold_Price,SPGSCI_Price=SPGSCI_Price,BCOM_Price=BCOM_Price,DBC_Price=DBC_Price,Oil_Price=Oil_Price)
@@ -190,6 +240,7 @@ databond=data.frame(date=date_new,FVX_Price=FVX_Price,TNX_Price=TNX_Price,IRX_Pr
 dataFX=data.frame(date=date_new,DXY_Price=DXY_Price,RUB_Price=RUB_Price,JPY_Price=JPY_Price,CNY_Price=CNY_Price,EUR_Price=EUR_Price)
 
 #plotting the graph of the price
+
 ggplot(datacoin, aes(x=date, y=BTC_Price)) + geom_line() + xlab("") + ggtitle("BTC_Price")
 ggplot(datacoin, aes(x=date, y=ETH_Price)) + geom_line() + xlab("") + ggtitle("ETH_Price")
 ggplot(datacoin, aes(x=date, y=DOGE_Price)) + geom_line() + xlab("") + ggtitle("DOGE_Price")
@@ -220,8 +271,9 @@ ggplot(dataFX, aes(x=date, y=RUB_Price)) + geom_line() + xlab("") + ggtitle("RUB
 ggplot(dataFX, aes(x=date, y=JPY_Price)) + geom_line() + xlab("") + ggtitle("JPY_Price")
 ggplot(dataFX, aes(x=date, y=CNY_Price)) + geom_line() + xlab("") + ggtitle("CNY_Price")
 ggplot(dataFX, aes(x=date, y=EUR_Price)) + geom_line() + xlab("") + ggtitle("EUR_Price")
-
+ 
 #Showing the quantile of return
+
 quantile(r_BTC)
 quantile(r_ETH)
 quantile(r_DOGE)
@@ -253,7 +305,9 @@ quantile(r_JPY)
 quantile(r_CNY)
 quantile(r_EUR)
 
+
 #drawing the histogram of return
+
 hist(r_BTC,breaks=40,main="Histogram of Log Asset Return of BTC")
 qqnorm(r_BTC, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of BTC") #plot the quantile of r
 qqline(r_BTC, col = "steelblue", lwd = 2) #plot the theoretical line
@@ -345,7 +399,10 @@ hist(r_EUR,breaks=40,main="Histogram of Log Asset Return of EUR")
 qqnorm(r_EUR, pch = 1, frame = FALSE,main="QQ Plot of Log Asset Return of EUR") #plot the quantile of r
 qqline(r_EUR, col = "steelblue", lwd = 2) #plot the theoretical line
 
+
+
 #Calculating the return and the risk 
+
 mean(r_BTC)
 sd(r_BTC)
 mean(r_ETH)
@@ -407,25 +464,32 @@ sd(r_CNY)
 mean(r_EUR)
 sd(r_EUR)
 
+
 #constructing scatter plot and correlation with significance level for crypto currencies
+
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market)
 chart.Correlation(my_data, histogram=TRUE, pch=19)
+
 
 #constructing scatter plot and correlation with significance level between crypto currencies and equities
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_S.P,r_S.P45,r_DOW,r_NASDAQ)
 chart.Correlation(my_data, histogram=TRUE, pch=19)
 
+
 #constructing scatter plot and correlation with significance level between crypto currencies and commodities
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_SPGSCI,r_BCOM,r_DBC)
 chart.Correlation(my_data, histogram=TRUE, pch=19)
+
 
 #constructing scatter plot and correlation with significance level between crypto currencies and bonds
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_IRX,r_FVX,r_TNX,r_JGB,r_Gilt)
 chart.Correlation(my_data, histogram=TRUE, pch=19)
 
+
 #constructing scatter plot and correlation with significance level between crypto currencies and currencies
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market,r_DXY,r_EUR,r_JPY,r_CNY,r_RUB)
 chart.Correlation(my_data, histogram=TRUE, pch=19)
+
 
 #Spearman correlation and p-value test for all assets(Heatmap)
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Gold,r_Oil,r_S.P,r_S.P45,r_Market,r_DOW,r_NASDAQ,r_SPGSCI,r_BCOM,r_DBC,r_FVX,r_TNX,r_IRX,r_Gilt,r_JGB,r_DXY,r_RUB,r_JPY,r_CNY,r_EUR)
@@ -435,6 +499,7 @@ res2
 res2$P[is.na(res2$P)]<-0
 corrplot(res2$r, type="upper", order="hclust",p.mat = res2$P, sig.level = 0.01, insig = "blank")
 
+
 #Pearson correlation and p-value test for all assets(Heatmap & Correlogram)
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Gold,r_Oil,r_S.P,r_S.P45,r_Market,r_DOW,r_NASDAQ,r_SPGSCI,r_BCOM,r_DBC,r_FVX,r_TNX,r_IRX,r_Gilt,r_JGB,r_DXY,r_RUB,r_JPY,r_CNY,r_EUR)
 res2 <- rcorr(my_data)
@@ -443,10 +508,13 @@ res2
 res2$P[is.na(res2$P)]<-0
 corrplot(res2$r, type="upper", order="hclust",p.mat = res2$P, sig.level = 0.01, insig = "blank")
 pheatmap(res2$r, clustering_distance_rows = "correlation", display_numbers = TRUE)
+ 
+
 
 #Kendall correlation for all assets
 my_data <- cbind(r_BTC,r_ETH,r_DOGE,r_SOL,r_USDT,r_XRP,r_BNB,r_USDC,r_BUSD,r_ADA,r_Market)
 res<-cor(my_data, method = "kendall")
+
 
 #Conduct PCA
 return=data.frame(r_BTC=r_BTC,r_ETH=r_ETH,r_DOGE=r_DOGE,r_SOL=r_SOL,r_USDT=r_USDT,r_XRP=r_XRP,r_BNB=r_BNB,r_USDC=r_USDC,r_BUSD=r_BUSD,r_ADA=r_ADA,r_Oil=r_Oil,r_Gold=r_Gold,r_S.P=r_S.P,r_S.P45=r_S.P45,r_DOW=r_DOW,r_NASDAQ=r_NASDAQ,r_SPGSCI=r_SPGSCI,r_BCOM=r_BCOM,r_DBC=r_DBC,r_FVX=r_FVX,r_TNX=r_TNX,r_IRX=r_IRX,r_DXY=r_DXY,r_RUB=r_RUB,r_JPY=r_JPY,r_CNY=r_CNY,r_EUR=r_EUR,r_JGB=r_JGB,r_Gilt=r_Gilt)
@@ -457,12 +525,14 @@ my_pca$x
 return2<-cbind(return,my_pca$x[,1:2])
 head(return2)
 
+
 #Conduct multiple linear regression analysis with BTC and traditional assets
 result=lm(r_BTC~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with ETH and traditional assets
 result=lm(r_ETH~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
@@ -471,12 +541,15 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
+
 #Conduct multiple linear regression analysis with DOGE and traditional assets
 result=lm(r_DOGE~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with SOL and traditional assets
 result=lm(r_SOL~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
@@ -485,12 +558,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with USDT and traditional assets
 result=lm(r_USDT~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with XRP and traditional assets
 result=lm(r_XRP~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
@@ -499,12 +574,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with BNB and traditional assets
 result=lm(r_BNB~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with USDC and traditional assets
 result=lm(r_USDC~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
@@ -513,6 +590,7 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with BUSD and traditional assets
 result=lm(r_BUSD~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
@@ -520,49 +598,53 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with ADA and traditional assets
 result=lm(r_ADA~r_Oil+r_Gold+r_S.P+r_S.P45+r_DOW+r_NASDAQ+r_SPGSCI+r_BCOM+r_DBC+r_FVX+r_TNX+r_IRX+r_DXY+r_RUB+r_JPY+r_CNY+r_EUR+r_Gilt+r_JGB)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+ 
 
 
-Interest_rate=stock$interestrate.US.[1:852]
-Unemployment_rate=stock$Unemployment_rate.US.[1:852]
-Inflation_rate=stock$Inflationrate.US.[1:852]
-GDP=stock$GDP.US.[1:852]
-BTC_Price=stock$BTC_Price[1:852]
-ETH_Price=stock$ETH_Price[1:852]
-DOGE_Price=stock$DOGE_Price[1:852]
-SOL_Price=stock$SOL_Price[1:852]
-USDT_Price=stock$USDT_Price[1:852]
-XRP_Price=stock$XRP_Price[1:852]
-BNB_Price=stock$BNB_Price[1:852]
-USDC_Price=stock$USDC_Price[1:852]
-BUSD_Price=stock$BUSD_Price[1:852]
-ADA_Price=stock$ADA_Price[1:852]
-Gold_Price=stock$Gold_Price[1:852]
-S.P_Price=stock$S.P_Price[1:852]
-Oil_Price=stock$Oil_Price[1:852]
-S.P45_Price=stock$S.P45_Price[1:852]
-Market_Price=stock$Market_Price[1:852]
-DOW_Price=stock$DOW_Price[1:852]
-NASDAQ_Price=stock$NASDAQ_Price[1:852]
-SPGSCI_Price=stock$SPGSCI_Price[1:852]
-BCOM_Price=stock$BCOM_Price[1:852]
-DBC_Price=stock$DBC_Price[1:852]
-FVX_Price=stock$FVX_Yield[1:852]
-TNX_Price=stock$TNX_Yield[1:852]
-IRX_Price=stock$IRX_Yield[1:852]
-Gilt_Price=stock$IRX_Yield[1:852]
-BUND_Price=stock$IRX_Yield[1:852]
-JGB_Price=stock$IRX_Yield[1:852]
-DXY_Price=stock$DXY_Price[1:852]
-RUB_Price=stock$RUB.USD[1:852]
-JPY_Price=stock$JPY.USD[1:852]
-CNY_Price=stock$CNY.USD[1:852]
-EUR_Price=stock$EUR.USD[1:852]
+#Standardize the economic factors
+Interest_rate=scale(stock$interestrate.US.)
+Unemployment_rate=scale(stock$Unemployment_rate.US.)
+Inflation_rate=scale(stock$Inflationrate.US.)
+GDP=scale(stock$GDP.US.)
+BTC_Price=stock$BTC_Price
+ETH_Price=stock$ETH_Price
+DOGE_Price=stock$DOGE_Price
+SOL_Price=stock$SOL_Price
+USDT_Price=stock$USDT_Price
+XRP_Price=stock$XRP_Price
+BNB_Price=stock$BNB_Price
+USDC_Price=stock$USDC_Price
+BUSD_Price=stock$BUSD_Price
+ADA_Price=stock$ADA_Price
+Gold_Price=stock$Gold_Price
+S.P_Price=stock$S.P_Price
+Oil_Price=stock$Oil_Price
+S.P45_Price=stock$S.P45_Price
+Market_Price=stock$Market_Price
+DOW_Price=stock$DOW_Price
+NASDAQ_Price=stock$NASDAQ_Price
+SPGSCI_Price=stock$SPGSCI_Price
+BCOM_Price=stock$BCOM_Price
+DBC_Price=stock$DBC_Price
+FVX_Price=stock$FVX_Yield
+TNX_Price=stock$TNX_Yield
+IRX_Price=stock$IRX_Yield
+Gilt_Price=stock$IRX_Yield
+BUND_Price=stock$IRX_Yield
+JGB_Price=stock$IRX_Yield
+DXY_Price=stock$DXY_Price
+RUB_Price=stock$RUB.USD
+JPY_Price=stock$JPY.USD
+CNY_Price=stock$CNY.USD
+EUR_Price=stock$EUR.USD
+
 
 #Conduct multiple linear regression analysis with BTC and economic factors
 result=lm(BTC_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -571,12 +653,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with ETH and economic factors
 result=lm(ETH_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with DOGE and economic factors
 result=lm(DOGE_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -585,12 +669,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with BUSD and economic factors
 result=lm(BUSD_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with USDT and economic factors
 result=lm(USDT_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -599,12 +685,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with USDC and economic factors
 result=lm(USDC_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with ADA and economic factors
 result=lm(ADA_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -613,12 +701,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with SOL and economic factors
 result=lm(SOL_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with XRP and economic factors
 result=lm(XRP_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -627,12 +717,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with BNB and economic factors
 result=lm(BNB_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with Oil and economic factors
 result=lm(Oil_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -641,12 +733,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with Gold and economic factors
 result=lm(Gold_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with S&P and economic factors
 result=lm(S.P_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -655,12 +749,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with S&P(Technology) and economic factors
 result=lm(S.P45_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with DOW and economic factors
 result=lm(DOW_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -669,12 +765,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with NASDAQ and economic factors
 result=lm(NASDAQ_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with SPGSCI and economic factors
 result=lm(SPGSCI_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -683,6 +781,7 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with BCOM and economic factors
 result=lm(BCOM_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
@@ -690,12 +789,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with DBC and economic factors
 result=lm(DBC_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+ 
 
 #Conduct multiple linear regression analysis with FVX and economic factors
 result=lm(FVX_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -704,12 +805,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with TNX and economic factors
 result=lm(TNX_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with IRX and economic factors
 result=lm(IRX_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -718,12 +821,15 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with JGB and economic factors
 result=lm(JGB_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+ 
+
 
 #Conduct multiple linear regression analysis with Gilt and economic factors
 result=lm(Gilt_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -731,6 +837,7 @@ plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+ 
 
 
 #Conduct multiple linear regression analysis with DXY and economic factors
@@ -739,6 +846,8 @@ plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+ 
+
 
 #Conduct multiple linear regression analysis with RUB and economic factors
 result=lm(RUB_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -747,12 +856,14 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with JPY and economic factors
 result=lm(JPY_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
 
 #Conduct multiple linear regression analysis with CNY and economic factors
 result=lm(CNY_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
@@ -761,9 +872,626 @@ plot(result,3)
 plot(result,2)
 summary(result)
 
+
 #Conduct multiple linear regression analysis with EUR and economic factors
 result=lm(EUR_Price~Interest_rate+Unemployment_rate+Inflation_rate+GDP)
 plot(result,1)
 plot(result,3)
 plot(result,2)
 summary(result)
+
+#Sharpe Ratio for every asset
+
+mreturn=data.frame(mr_BTC=mr_BTC,mr_ETH=mr_ETH,mr_DOGE=mr_DOGE,mr_SOL=mr_SOL,mr_USDT=mr_USDT,mr_XRP=mr_XRP,mr_BNB=mr_BNB,mr_USDC=mr_USDC,mr_BUSD=mr_BUSD,mr_ADA=mr_ADA,mr_Market=mr_Market,mr_Oil=mr_Oil,mr_Gold=mr_Gold,mr_S.P=mr_S.P,mr_S.P45=mr_S.P45,mr_DOW=mr_DOW,mr_NASDAQ=mr_NASDAQ,mr_SPGSCI=mr_SPGSCI,mr_BCOM=mr_BCOM,mr_DBC=mr_DBC,mr_FVX=mr_FVX,mr_TNX=mr_TNX,mr_IRX=mr_IRX,mr_DXY=mr_DXY,mr_RUB=mr_RUB,mr_JPY=mr_JPY,mr_CNY=mr_CNY,mr_EUR=mr_EUR,mr_JGB=mr_JGB,mr_Gilt=mr_Gilt)
+
+standardev=data.frame(sd_BTC=sd_BTC,sd_ETH=sd_ETH,sd_DOGE=sd_DOGE,sd_SOL=sd_SOL,sd_USDT=sd_USDT,sd_XRP=sd_XRP,sd_BNB=sd_BNB,sd_USDC=sd_USDC,sd_BUSD=sd_BUSD,sd_ADA=sd_ADA,sd_Market=sd_Market,sd_Oil=sd_Oil,sd_Gold=sd_Gold,sd_S.P=sd_S.P,sd_S.P45=sd_S.P45,sd_DOW=sd_DOW,sd_NASDAQ=sd_NASDAQ,sd_SPGSCI=sd_SPGSCI,sd_BCOM=sd_BCOM,sd_DBC=sd_DBC,sd_FVX=sd_FVX,sd_TNX=sd_TNX,sd_IRX=sd_IRX,sd_DXY=sd_DXY,sd_RUB=sd_RUB,sd_JPY=sd_JPY,sd_CNY=sd_CNY,sd_EUR=sd_EUR,sd_JGB=sd_JGB,sd_Gilt=sd_Gilt)
+
+rf_rate=mean(stock$interestrate.US.)
+Sharplist<-list()
+for (i in 1:length(mreturn)){
+  a=0
+  a=(mreturn[i]-rf_rate)/standardev[i]
+  Sharplist<-append(Sharplist,a)}
+Sharplist
+
+
+#Time series data of cryptocurrencies
+BTC<-ts(BTC_Price)
+ETH<-ts(ETH_Price)
+DOGE<-ts(DOGE_Price)
+SOL<-ts(SOL_Price)
+USDT<-ts(USDT_Price)
+XRP<-ts(XRP_Price)
+BNB<-ts(BNB_Price)
+USDC<-ts(USDC_Price)
+BUSD<-ts(BUSD_Price)
+ADA<-ts(ADA_Price)
+
+
+#Data preparation
+BTC_split<-ts_split(BTC, sample.out = 170)
+BTC_train<-BTC_split$train
+BTC_test<-BTC_split$test
+
+ETH_split<-ts_split(ETH, sample.out = 170)
+ETH_train<-ETH_split$train
+ETH_test<-ETH_split$test
+
+DOGE_split<-ts_split(DOGE, sample.out = 170)
+DOGE_train<-DOGE_split$train
+DOGE_test<-DOGE_split$test
+
+SOL_split<-ts_split(SOL, sample.out = 170)
+SOL_train<-SOL_split$train
+SOL_test<-SOL_split$test
+
+USDT_split<-ts_split(USDT, sample.out = 170)
+USDT_train<-USDT_split$train
+USDT_test<-USDT_split$test
+
+XRP_split<-ts_split(XRP, sample.out = 170)
+XRP_train<-XRP_split$train
+XRP_test<-XRP_split$test
+
+BNB_split<-ts_split(BNB, sample.out = 170)
+BNB_train<-BNB_split$train
+BNB_test<-BNB_split$test
+
+USDC_split<-ts_split(USDC, sample.out = 170)
+USDC_train<-USDC_split$train
+USDC_test<-USDC_split$test
+
+BUSD_split<-ts_split(BUSD, sample.out = 170)
+BUSD_train<-BUSD_split$train
+BUSD_test<-BUSD_split$test
+
+ADA_split<-ts_split(ADA, sample.out = 170)
+ADA_train<-ADA_split$train
+ADA_test<-ADA_split$test
+
+Interest_rate<-ts(Interest_rate)
+Interest_rate_split<-ts_split(Interest_rate, sample.out = 170)
+Interest_rate_train<-Interest_rate_split$train
+Interest_rate_test<-Interest_rate_split$test
+
+Unemployment_rate<-ts(Unemployment_rate)
+Unemployment_rate_split<-ts_split(Unemployment_rate, sample.out = 170)
+Unemployment_rate_train<-Unemployment_rate_split$train
+Unemployment_rate_test<-Unemployment_rate_split$test
+
+Inflation_rate<-ts(Inflation_rate)
+Inflation_rate_split<-ts_split(Inflation_rate, sample.out = 170)
+Inflation_rate_train<-Inflation_rate_split$train
+Inflation_rate_test<-Inflation_rate_split$test
+
+GDP<-ts(GDP)
+GDP_split<-ts_split(GDP, sample.out = 170)
+GDP_train<-GDP_split$train
+GDP_test<-GDP_split$test
+
+
+#Data set of BTC
+train.dats <- data.frame(Time = time(BTC_train))
+train.dats$Interest_rate <- Interest_rate_train
+train.dats$Unemployment_rate <- Unemployment_rate_train
+train.dats$Inflation_rate <- Inflation_rate_train
+train.dats$GDP <- GDP_train
+train.dats$lagged <- ts(lag(as.vector(BTC_train),1))
+
+test.dats <- data.frame(Time = time(BTC_test))
+test.dats$Interest_rate <- Interest_rate_test
+test.dats$Unemployment_rate <- Unemployment_rate_test
+test.dats$Inflation_rate <- Inflation_rate_test
+test.dats$GDP <- GDP_test
+test.dats$lagged <- ts(lag(as.vector(BTC_test),1))
+
+#Valuation model of BTC
+BTC_model<-tslm(BTC_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(BTC_model)
+CV(BTC_model)
+vif(BTC_model)
+checkresiduals(BTC_model)
+
+BTC_forecast<-forecast::forecast(BTC_model, newdata = test.dats,level=95)
+BTC_accuracy<-accuracy(BTC_forecast,BTC_test)
+BTC_accuracy
+
+#Box-Cox transformation
+BTC_model<-tslm(BTC_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP, lambda = 0, biasadj = TRUE,data = train.dats)
+summary(BTC_model)
+CV(BTC_model)
+checkresiduals(BTC_model)
+
+BTC_forecast<-forecast::forecast(BTC_model, newdata = test.dats,level=95)
+BTC_accuracy<-accuracy(BTC_forecast,BTC_test)
+BTC_accuracy
+
+#Adding lagged variable of y to model and drop insignificant variables
+BTC_model<-tslm(BTC_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(BTC_model)
+CV(BTC_model)
+
+BTC_model<-tslm(BTC_train~lagged+Unemployment_rate+Inflation_rate,data = train.dats)
+summary(BTC_model)
+CV(BTC_model)
+
+#Performance evaluation
+BTC_forecast<-forecast::forecast(BTC_model, newdata = test.dats,level=95)
+BTC_accuracy<-accuracy(BTC_forecast,BTC_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+BTC_accuracy
+
+BTC_df<- data.frame(date=date)
+BTC_df$Price<-BTC
+checkresiduals(BTC_model)
+autoplot(BTC)+autolayer(BTC_forecast,col = adjustcolor( "blue", alpha.f = 0.7))+ylab("Price")+xlab("Time")+ggtitle("Time plot of BTC")
+
+drift<-accuracy(rwf(BTC_train, h=170, drift=TRUE), BTC_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+mean<-accuracy(meanf(BTC_train, h=170),BTC_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+naive<-accuracy(naive(BTC_train, h=170), BTC_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+table = matrix(c( BTC_accuracy,drift,mean,naive),ncol=4,byrow=TRUE)
+colnames(table) <- c('RMSE','MAE','MAPE','MASE')
+rownames(table)<-c('Regression','Drift method','Mean method','Naive method')
+table <- as.table(table)
+round(table,digits=2)
+
+
+#Updated data set of ETH
+train.dats$lagged <- ts(lag(as.vector(ETH_train),6))
+test.dats$lagged <- ts(lag(as.vector(ETH_test),6))
+
+#Valuation model of ETH
+ETH_model<-tslm(ETH_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(ETH_model)
+CV(ETH_model)
+vif(ETH_model)
+checkresiduals(ETH_model)
+
+ETH_forecast<-forecast::forecast(ETH_model, newdata = test.dats,level=95)
+ETH_accuracy<-accuracy(ETH_forecast,ETH_test)
+ETH_accuracy
+
+#Box-Cox transformation
+ETH_model<-tslm(ETH_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP, lambda = 0, biasadj = TRUE,data = train.dats)
+summary(ETH_model)
+CV(ETH_model)
+checkresiduals(ETH_model)
+
+ETH_forecast<-forecast::forecast(ETH_model, newdata = test.dats,level=95)
+ETH_accuracy<-accuracy(ETH_forecast,ETH_test)
+ETH_accuracy
+
+#Adding lagged variable of y to model and drop insignificant variables
+ETH_model<-tslm(ETH_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(ETH_model)
+CV(ETH_model)
+
+ETH_model<-tslm(ETH_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate,data = train.dats)
+summary(ETH_model)
+CV(ETH_model)
+
+#Performance evaluation
+ETH_forecast<-forecast::forecast(ETH_model, newdata = test.dats,level=95)
+ETH_accuracy<-accuracy(ETH_forecast,ETH_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+ETH_accuracy
+
+checkresiduals(ETH_model)
+autoplot(ETH)+autolayer(ETH_forecast,col = adjustcolor( "blue", alpha.f = 0.7))+ylab("Price")+xlab("Time")+ggtitle("Time plot of ETH")
+
+drift<-accuracy(rwf(ETH_train, h=170, drift=TRUE), ETH_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+mean<-accuracy(meanf(ETH_train, h=170),ETH_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+naive<-accuracy(naive(ETH_train, h=170), ETH_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+table = matrix(c(ETH_accuracy,drift,mean,naive),ncol=4,byrow=TRUE)
+colnames(table) <- c('RMSE','MAE','MAPE','MASE')
+rownames(table)<-c('Regression','Drift method','Mean method','Naive method')
+table <- as.table(table)
+round(table,digits=2)
+
+#Updated data set of DOGE
+train.dats$lagged <- ts(lag(as.vector(DOGE_train),12))
+test.dats$lagged <- ts(lag(as.vector(DOGE_test),12))
+
+#Valuation model of DOGE
+DOGE_model<-tslm(DOGE_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(DOGE_model)
+CV(DOGE_model)
+vif(DOGE_model)
+checkresiduals(DOGE_model)
+
+DOGE_forecast<-forecast::forecast(DOGE_model, newdata = test.dats,level=95)
+DOGE_accuracy<-accuracy(DOGE_forecast,DOGE_test)
+DOGE_accuracy
+
+#Box-Cox transformation
+DOGE_model<-tslm(DOGE_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP, lambda = 0, biasadj = TRUE,data = train.dats)
+summary(DOGE_model)
+CV(DOGE_model)
+checkresiduals(DOGE_model)
+
+DOGE_forecast<-forecast::forecast(DOGE_model, newdata = test.dats,level=95)
+DOGE_accuracy<-accuracy(DOGE_forecast,DOGE_test)
+DOGE_accuracy
+
+
+#Adding lagged variable of y to model and drop insignificant variables
+DOGE_model<-tslm(DOGE_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(DOGE_model)
+CV(DOGE_model)
+
+DOGE_model<-tslm(DOGE_train~lagged+Interest_rate,data = train.dats)
+summary(DOGE_model)
+CV(DOGE_model)
+
+#Performance evaluation
+DOGE_forecast<-forecast::forecast(DOGE_model, newdata = test.dats,level=95)
+DOGE_accuracy<-accuracy(DOGE_forecast,DOGE_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+DOGE_accuracy
+
+checkresiduals(DOGE_model)
+autoplot(DOGE)+autolayer(DOGE_forecast,col = adjustcolor( "blue", alpha.f = 0.7))+ylab("Price")+xlab("Time")+ggtitle("Time plot of DOGE")
+
+drift<-accuracy(rwf(DOGE_train, h=170, drift=TRUE), DOGE_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+mean<-accuracy(meanf(DOGE_train, h=170),DOGE_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+naive<-accuracy(naive(DOGE_train, h=170), DOGE_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+table = matrix(c(DOGE_accuracy,drift,mean,naive),ncol=4,byrow=TRUE)
+colnames(table) <- c('RMSE','MAE','MAPE','MASE')
+rownames(table)<-c('Regression','Drift method','Mean method','Naive method')
+table <- as.table(table)
+round(table,digits=2)
+
+#Updated data set of SOL
+train.dats$lagged <- ts(lag(as.vector(SOL_train),6))
+test.dats$lagged <- ts(lag(as.vector(SOL_test),6))
+
+#Valuation model of SOL
+SOL_model<-tslm(SOL_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(SOL_model)
+CV(SOL_model)
+vif(SOL_model)
+checkresiduals(SOL_model)
+
+SOL_forecast<-forecast::forecast(SOL_model, newdata = test.dats,level=95)
+SOL_accuracy<-accuracy(SOL_forecast,SOL_test)
+SOL_accuracy
+
+#Box-Cox transformation
+SOL_model<-tslm(SOL_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP, lambda = 0, biasadj = TRUE,data = train.dats)
+summary(SOL_model)
+CV(SOL_model)
+checkresiduals(SOL_model)
+
+SOL_forecast<-forecast::forecast(SOL_model, newdata = test.dats,level=95)
+SOL_accuracy<-accuracy(SOL_forecast,SOL_test)
+SOL_accuracy
+
+#Adding lagged variable of y to model and drop insignificant variables
+SOL_model<-tslm(SOL_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(SOL_model)
+CV(SOL_model)
+
+SOL_model<-tslm(SOL_train~lagged+Interest_rate+Inflation_rate+GDP,data = train.dats)
+summary(SOL_model)
+CV(SOL_model)
+
+#Performance evaluation
+SOL_forecast<-forecast::forecast(SOL_model, newdata = test.dats,level=95)
+SOL_accuracy<-accuracy(SOL_forecast,SOL_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+SOL_accuracy
+
+checkresiduals(SOL_model)
+autoplot(SOL)+autolayer(SOL_forecast,col = adjustcolor( "blue", alpha.f = 0.7))+ylab("Price")+xlab("Time")+ggtitle("Time plot of SOL")
+
+drift<-accuracy(rwf(SOL_train, h=170, drift=TRUE), SOL_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+mean<-accuracy(meanf(SOL_train, h=170),SOL_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+naive<-accuracy(naive(SOL_train, h=170), SOL_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+table = matrix(c(SOL_accuracy,drift,mean,naive),ncol=4,byrow=TRUE)
+colnames(table) <- c('RMSE','MAE','MAPE','MASE')
+rownames(table)<-c('Regression','Drift method','Mean method','Naive method')
+table <- as.table(table)
+round(table,digits=2)
+
+#Updated data set of USDT
+train.dats$lagged <- ts(lag(as.vector(USDT_train),6))
+test.dats$lagged <- ts(lag(as.vector(USDT_test),6))
+
+#Valuation model of USDT
+USDT_model<-tslm(USDT_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(USDT_model)
+CV(USDT_model)
+vif(USDT_model)
+checkresiduals(USDT_model)
+
+USDT_forecast<-forecast::forecast(USDT_model, newdata = test.dats,level=95)
+USDT_accuracy<-accuracy(USDT_forecast,USDT_test)
+USDT_accuracy
+
+#Box-Cox transformation
+USDT_model<-tslm(USDT_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP, lambda = 0, biasadj = TRUE,data = train.dats)
+summary(USDT_model)
+CV(USDT_model)
+checkresiduals(USDT_model)
+
+USDT_forecast<-forecast::forecast(USDT_model, newdata = test.dats,level=95)
+USDT_accuracy<-accuracy(USDT_forecast,USDT_test)
+USDT_accuracy
+
+#Adding lagged variable of y to model and drop insignificant variables
+USDT_model<-tslm(USDT_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(USDT_model)
+CV(USDT_model)
+
+USDT_model<-tslm(USDT_train~lagged+Unemployment_rate+Inflation_rate,data = train.dats)
+summary(USDT_model)
+CV(USDT_model)
+
+#Performance evaluation
+USDT_forecast<-forecast::forecast(USDT_model, newdata = test.dats,level=95)
+USDT_accuracy<-accuracy(USDT_forecast,USDT_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+USDT_accuracy
+
+checkresiduals(USDT_model)
+autoplot(USDT)+autolayer(USDT_forecast,col = adjustcolor( "blue", alpha.f = 0.7))+ylab("Price")+xlab("Time")+ggtitle("Time plot of USDT")
+
+drift<-accuracy(rwf(USDT_train, h=170, drift=TRUE), USDT_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+mean<-accuracy(meanf(USDT_train, h=170),USDT_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+naive<-accuracy(naive(USDT_train, h=170), USDT_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+table = matrix(c(USDT_accuracy,drift,mean,naive),ncol=4,byrow=TRUE)
+colnames(table) <- c('RMSE','MAE','MAPE','MASE')
+rownames(table)<-c('Regression','Drift method','Mean method','Naive method')
+table <- as.table(table)
+round(table,digits=2)
+
+#Updated data set of XRP
+train.dats$lagged <- ts(lag(as.vector(XRP_train),5))
+test.dats$lagged <- ts(lag(as.vector(XRP_test),5))
+
+#Valuation model of XRP
+XRP_model<-tslm(XRP_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(XRP_model)
+CV(XRP_model)
+vif(XRP_model)
+checkresiduals(XRP_model)
+
+XRP_forecast<-forecast::forecast(XRP_model, newdata = test.dats,level=95)
+XRP_accuracy<-accuracy(XRP_forecast,XRP_test)
+XRP_accuracy
+
+#Box-Cox transformation
+
+XRP_model<-tslm(XRP_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP, lambda = 0, biasadj = TRUE,data = train.dats)
+summary(XRP_model)
+CV(XRP_model)
+checkresiduals(XRP_model)
+
+XRP_forecast<-forecast::forecast(XRP_model, newdata = test.dats,level=95)
+XRP_accuracy<-accuracy(XRP_forecast,XRP_test)
+XRP_accuracy
+
+#Adding lagged variable of y to model and drop insignificant variables
+XRP_model<-tslm(XRP_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(XRP_model)
+CV(XRP_model)
+
+XRP_model<-tslm(XRP_train~lagged+Interest_rate+Inflation_rate+GDP,data = train.dats)
+summary(XRP_model)
+CV(XRP_model)
+
+#Performance evaluation
+XRP_forecast<-forecast::forecast(XRP_model, newdata = test.dats,level=95)
+XRP_accuracy<-accuracy(XRP_forecast,XRP_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+XRP_accuracy
+
+checkresiduals(XRP_model)
+autoplot(XRP)+autolayer(XRP_forecast,col = adjustcolor( "blue", alpha.f = 0.7))+ylab("Price")+xlab("Time")+ggtitle("Time plot of XRP")
+
+drift<-accuracy(rwf(XRP_train, h=170, drift=TRUE), XRP_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+mean<-accuracy(meanf(XRP_train, h=170),XRP_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+naive<-accuracy(naive(XRP_train, h=170), XRP_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+table = matrix(c(XRP_accuracy,drift,mean,naive),ncol=4,byrow=TRUE)
+colnames(table) <- c('RMSE','MAE','MAPE','MASE')
+rownames(table)<-c('Regression','Drift method','Mean method','Naive method')
+table <- as.table(table)
+round(table,digits=2)
+
+#Updated data set of BNB
+train.dats$lagged <- ts(lag(as.vector(BNB_train),2))
+test.dats$lagged <- ts(lag(as.vector(BNB_test),2))
+
+#Valuation model of BNB
+BNB_model<-tslm(BNB_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(BNB_model)
+CV(BNB_model)
+vif(BNB_model)
+checkresiduals(BNB_model)
+
+BNB_forecast<-forecast::forecast(BNB_model, newdata = test.dats,level=95)
+BNB_accuracy<-accuracy(BNB_forecast,BNB_test)
+BNB_accuracy
+
+#Box-Cox transformation
+BNB_model<-tslm(BNB_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP, lambda = 0, biasadj = TRUE,data = train.dats)
+summary(BNB_model)
+CV(BNB_model)
+checkresiduals(BNB_model)
+
+BNB_forecast<-forecast::forecast(BNB_model, newdata = test.dats,level=95)
+BNB_accuracy<-accuracy(BNB_forecast,BNB_test)
+BNB_accuracy
+
+#Adding lagged variable of y to model and drop insignificant variables
+BNB_model<-tslm(BNB_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(BNB_model)
+CV(BNB_model)
+
+BNB_model<-tslm(BNB_train~lagged+Inflation_rate+GDP,data = train.dats)
+summary(BNB_model)
+CV(BNB_model)
+
+#Performance evaluation
+BNB_forecast<-forecast::forecast(BNB_model, newdata = test.dats,level=95)
+BNB_accuracy<-accuracy(BNB_forecast,BNB_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+BNB_accuracy
+
+checkresiduals(BNB_model)
+autoplot(BNB)+autolayer(BNB_forecast,col = adjustcolor( "blue", alpha.f = 0.7))+ylab("Price")+xlab("Time")+ggtitle("Time plot of BNB")
+
+drift<-accuracy(rwf(BNB_train, h=170, drift=TRUE), BNB_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+mean<-accuracy(meanf(BNB_train, h=170),BNB_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+naive<-accuracy(naive(BNB_train, h=170), BNB_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+table = matrix(c(BNB_accuracy,drift,mean,naive),ncol=4,byrow=TRUE)
+colnames(table) <- c('RMSE','MAE','MAPE','MASE')
+rownames(table)<-c('Regression','Drift method','Mean method','Naive method')
+table <- as.table(table)
+round(table,digits=2)
+
+#Updated data set of USDC
+train.dats$lagged <- ts(lag(as.vector(USDC_train),5))
+test.dats$lagged <- ts(lag(as.vector(USDC_test),5))
+
+#Valuation model of USDC
+USDC_model<-tslm(USDC_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(USDC_model)
+CV(USDC_model)
+vif(USDC_model)
+checkresiduals(USDC_model)
+
+USDC_forecast<-forecast::forecast(USDC_model, newdata = test.dats,level=95)
+USDC_accuracy<-accuracy(USDC_forecast,USDC_test)
+USDC_accuracy
+
+#Box-Cox transformation
+USDC_model<-tslm(USDC_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP, lambda = 0, biasadj = TRUE,data = train.dats)
+summary(USDC_model)
+CV(USDC_model)
+checkresiduals(USDC_model)
+
+USDC_forecast<-forecast::forecast(USDC_model, newdata = test.dats,level=95)
+USDC_accuracy<-accuracy(USDC_forecast,USDC_test)
+USDC_accuracy
+
+#Adding lagged variable of y to model and drop insignificant variables
+USDC_model<-tslm(USDC_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(USDC_model)
+CV(USDC_model)
+
+USDC_model<-tslm(USDC_train~lagged+Unemployment_rate,data = train.dats)
+summary(USDC_model)
+CV(USDC_model)
+
+#Performance evaluation
+USDC_forecast<-forecast::forecast(USDC_model, newdata = test.dats,level=95)
+USDC_accuracy<-accuracy(USDC_forecast,USDC_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+USDC_accuracy
+
+checkresiduals(USDC_model)
+autoplot(USDC)+autolayer(USDC_forecast,col = adjustcolor( "blue", alpha.f = 0.7))+ylab("Price")+xlab("Time")+ggtitle("Time plot of USDC")
+
+drift<-accuracy(rwf(USDC_train, h=170, drift=TRUE), USDC_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+mean<-accuracy(meanf(USDC_train, h=170),USDC_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+naive<-accuracy(naive(USDC_train, h=170), USDC_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+table = matrix(c(USDC_accuracy,drift,mean,naive),ncol=4,byrow=TRUE)
+colnames(table) <- c('RMSE','MAE','MAPE','MASE')
+rownames(table)<-c('Regression','Drift method','Mean method','Naive method')
+table <- as.table(table)
+round(table,digits=2)
+
+#Updated data set of BUSD
+train.dats$lagged <- ts(lag(as.vector(BUSD_train),5))
+test.dats$lagged <- ts(lag(as.vector(BUSD_test),5))
+
+#Valuation model of BUSD
+BUSD_model<-tslm(BUSD_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(BUSD_model)
+CV(BUSD_model)
+vif(BUSD_model)
+checkresiduals(BUSD_model)
+
+BUSD_forecast<-forecast::forecast(BUSD_model, newdata = test.dats,level=95)
+BUSD_accuracy<-accuracy(BUSD_forecast,BUSD_test)
+BUSD_accuracy
+
+#Box-Cox transformation
+BUSD_model<-tslm(BUSD_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP, lambda = 0, biasadj = TRUE,data = train.dats)
+summary(BUSD_model)
+CV(BUSD_model)
+checkresiduals(BUSD_model)
+
+BUSD_forecast<-forecast::forecast(BUSD_model, newdata = test.dats,level=95)
+BUSD_accuracy<-accuracy(BUSD_forecast,BUSD_test)
+BUSD_accuracy
+
+#Adding lagged variable of y to model and drop insignificant variables
+BUSD_model<-tslm(BUSD_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(BUSD_model)
+CV(BUSD_model)
+
+BUSD_model<-tslm(BUSD_train~lagged+Unemployment_rate,data = train.dats)
+summary(BUSD_model)
+CV(BUSD_model)
+
+#Performance evaluation
+BUSD_forecast<-forecast::forecast(BUSD_model, newdata = test.dats,level=95)
+BUSD_accuracy<-accuracy(BUSD_forecast,BUSD_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+BUSD_accuracy
+
+checkresiduals(BUSD_model)
+autoplot(BUSD)+autolayer(BUSD_forecast,col = adjustcolor( "blue", alpha.f = 0.7))+ylab("Price")+xlab("Time")+ggtitle("Time plot of BUSD")
+
+drift<-accuracy(rwf(BUSD_train, h=170, drift=TRUE), BUSD_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+mean<-accuracy(meanf(BUSD_train, h=170),BUSD_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+naive<-accuracy(naive(BUSD_train, h=170), BUSD_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+table = matrix(c(BUSD_accuracy,drift,mean,naive),ncol=4,byrow=TRUE)
+colnames(table) <- c('RMSE','MAE','MAPE','MASE')
+rownames(table)<-c('Regression','Drift method','Mean method','Naive method')
+table <- as.table(table)
+round(table,digits=2)
+
+#Updated data set of ADA
+train.dats$lagged <- ts(lag(as.vector(ADA_train),2))
+test.dats$lagged <- ts(lag(as.vector(ADA_test),2))
+
+#Valuation model of ADA
+ADA_model<-tslm(ADA_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(ADA_model)
+CV(ADA_model)
+vif(ADA_model)
+checkresiduals(ADA_model)
+
+ADA_forecast<-forecast::forecast(ADA_model, newdata = test.dats,level=95)
+ADA_accuracy<-accuracy(ADA_forecast,ADA_test)
+ADA_accuracy
+
+#Box-Cox transformation
+ADA_model<-tslm(ADA_train~Interest_rate+Unemployment_rate+Inflation_rate+GDP, lambda = 0, biasadj = TRUE,data = train.dats)
+summary(ADA_model)
+CV(ADA_model)
+checkresiduals(ADA_model)
+
+ADA_forecast<-forecast::forecast(ADA_model, newdata = test.dats,level=95)
+ADA_accuracy<-accuracy(ADA_forecast,ADA_test)
+ADA_accuracy
+
+#Adding lagged variable of y to model and drop insignificant variables
+ADA_model<-tslm(ADA_train~lagged+Interest_rate+Unemployment_rate+Inflation_rate+GDP,data = train.dats)
+summary(ADA_model)
+CV(ADA_model)
+
+ADA_model<-tslm(ADA_train~lagged+Inflation_rate,data = train.dats)
+summary(ADA_model)
+CV(ADA_model)
+
+#Performance evaluation
+ADA_forecast<-forecast::forecast(ADA_model, newdata = test.dats,level=95)
+ADA_accuracy<-accuracy(ADA_forecast,ADA_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+ADA_accuracy
+
+checkresiduals(ADA_model)
+autoplot(ADA)+autolayer(ADA_forecast,col = adjustcolor( "blue", alpha.f = 0.7))+ylab("Price")+xlab("Time")+ggtitle("Time plot of ADA")
+
+drift<-accuracy(rwf(ADA_train, h=170, drift=TRUE), ADA_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+mean<-accuracy(meanf(ADA_train, h=170),ADA_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+naive<-accuracy(naive(ADA_train, h=170), ADA_test)[2,c("RMSE", "MAE", "MAPE", "MASE")]
+table = matrix(c(ADA_accuracy,drift,mean,naive),ncol=4,byrow=TRUE)
+colnames(table) <- c('RMSE','MAE','MAPE','MASE')
+rownames(table)<-c('Regression','Drift method','Mean method','Naive method')
+table <- as.table(table)
+round(table,digits=2)
