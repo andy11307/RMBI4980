@@ -22,7 +22,7 @@ from tensorflow.keras.models import Sequential
 
 
 #Open Excel file of portfolio optimization model
-wb=openpyxl.load_workbook('Portfolio_v12.xlsm', read_only=False, keep_vba=True)
+wb=openpyxl.load_workbook('Cryptocurrencies_Portfolio_Optimization_Model.xlsm', read_only=False, keep_vba=True)
 savesheet=wb.worksheets[1] #Set the sheet for saving data
 
 
@@ -941,5 +941,5 @@ for i in range(30):
 
 
 #Save all the values to Excel
-wb.save('Portfolio_v12.xlsm')
+wb.save('Cryptocurrencies_Portfolio_Optimization_Model.xlsm')
 
